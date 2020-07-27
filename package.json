@@ -2,7 +2,7 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"publisher": "madewithcardsio",
 	"engines": {
 		"vscode": "^1.36.0"
