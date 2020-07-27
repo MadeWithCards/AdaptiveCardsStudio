@@ -40,7 +40,7 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
         const items: INode[] = [];
         let folder = vscode.workspace.rootPath;
         vscode.window.showInformationMessage("Searching for Adaptive Cards in your workspace");
-        var files = await glob.sync(folder + "/**/*.json", {});
+        var files = await glob.sync(folder + "/**/*.json", { ignore: ["**/node_modules/**", "./node_modules/**"] });
         var i = 0;
         files.forEach(file => {
             var name = path.basename(file,".json");

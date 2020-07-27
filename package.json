@@ -1,15 +1,17 @@
 {
 	"name": "adaptivecardsstudiobeta",
-	"displayName": "Adaptive Card Studio (BETA)",
-	"description": "Adaptive Card Studio for Visual Studio Code. ( This is an early beta version )",
-	"version": "0.6.4",
+	"displayName": "Adaptive Card Studio",
+	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
+	"version": "0.7.0",
 	"publisher": "madewithcardsio",
 	"engines": {
 		"vscode": "^1.36.0"
 	},
 	"categories": [
 		"Other",
-		"Snippets"
+		"Extension Packs",
+		"Snippets",
+		"Visualization"
 	],
 	"activationEvents": [
 		"*",
@@ -18,19 +20,24 @@
 	],
 	"main": "./out/extension",
 	"contributes": {
-		"snippets": [{
-			"language": "json",
-			"path": "media/snippets.json"
-		}],
+		"snippets": [
+			{
+				"language": "json",
+				"path": "media/snippets.json"
+			}
+		],
 		"viewsContainers": {
-			"activitybar": [{
-				"id": "cardLists",
-				"title": "Adaptive Cards",
-				"icon": "resources/adaptivecards.png"
-			}]
+			"activitybar": [
+				{
+					"id": "cardLists",
+					"title": "Adaptive Cards",
+					"icon": "resources/adaptivecards.png"
+				}
+			]
 		},
 		"views": {
-			"cardLists": [{
+			"cardLists": [
+				{
 					"id": "cardList",
 					"name": "Workspace Cards"
 				},
@@ -40,7 +47,8 @@
 				}
 			]
 		},
-		"commands": [{
+		"commands": [
+			{
 				"command": "cardList.refresh",
 				"title": "Refresh",
 				"icon": {
@@ -66,7 +74,8 @@
 			}
 		],
 		"menus": {
-			"view/title": [{
+			"view/title": [
+				{
 					"command": "cardList.refresh",
 					"when": "view == cardList",
 					"group": "navigation"
@@ -78,10 +87,12 @@
 				}
 			]
 		},
-		"keybindings": [{
-			"command": "adaptivecardviewer.open",
-			"key": "ctrl+shift+v a"
-		}],
+		"keybindings": [
+			{
+				"command": "adaptivecardviewer.open",
+				"key": "ctrl+shift+v a"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "Adaptive Cards Studio",
@@ -112,12 +123,12 @@
 						"Windows Notifications (Preview)"
 					]
 				},
-                "acstudio.cmsAccessToken": {
+				"acstudio.cmsAccessToken": {
 					"type": "string",
 					"default": "",
 					"description": "(ALPHA) The Access Token used for CMS Cards"
 				},
-                "acstudio.cmsAccessUrl": {
+				"acstudio.cmsAccessUrl": {
 					"type": "string",
 					"default": "",
 					"description": "(ALPHA) The CMS Url"
@@ -148,7 +159,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/MadeWithCards/AdaptiveCardsStudio.git"
+		"url": "https://github.com/Microsoft/AdaptiveCards.git"
 	},
 	"license": "GNU3",
 	"icon": "icon.png",
