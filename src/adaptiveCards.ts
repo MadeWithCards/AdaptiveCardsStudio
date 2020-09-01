@@ -1,11 +1,16 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
-import {ShareByEmail} from "./shareOptions";
 import { WebViews } from "./webviews";
-import { INode } from "./model/nodes/INode";
-import axios from "axios";
-import Axios from "axios";
+import { isNullOrUndefined } from "util";
+
+const scopes = ["openid",
+"https://graph.microsoft.com/Mail.Send",
+"https://graph.microsoft.com/ChannelMessage.Send",
+"https://graph.microsoft.com/Chat.ReadWrite",
+"https://graph.microsoft.com/User.Read",
+"profile"];
+
 
 export class AdaptiveCardsMain {
     private readonly _extensionPath: string;
@@ -13,7 +18,7 @@ export class AdaptiveCardsMain {
     public statusBarItem: vscode.StatusBarItem;
     public readonly _context: vscode.ExtensionContext;
     public WebViews: WebViews;
-
+    private axios = require("axios");
     public templates =  [];
 
     constructor(private context: vscode.ExtensionContext,extensionPath: string) {
@@ -23,6 +28,22 @@ export class AdaptiveCardsMain {
         this.WebViews = new WebViews(this._context, this._context.extensionPath);
     }
 
+    public async clearCredentials(){
+        this.axios.defaults.headers.common = {
+           "Authorization": `Bearer `};
+    }
+
+    public async Initialize() {
+       const session = await vscode.authentication.getSession("microsoft", scopes, { createIfNone: false });
+
+        if(session != null) {
+            if(!isNullOrUndefined(session.id) && !isNullOrUndefined(!isNullOrUndefined(session.accessToken))) {
+                this.axios.defaults.headers.common = {
+                    "Authorization": `Bearer ${session.accessToken}`};
+            }
+        }
+
+    }
 
     // tslint:disable-next-line: typedef
     public async OpenOrUpdatePanel(cardPath: string, content: string) {
@@ -37,7 +58,7 @@ export class AdaptiveCardsMain {
         // when a template is edited, get data from json.data instead
         if(activeEditor.document.fileName.endsWith(".data.json")) {
             var templatefilePath: string = activeEditor.document.fileName.replace(".data","");
-            var activeFiles: vscode.TextDocument[] = vscode.workspace.textDocuments;
+            const activeFiles: any = vscode.workspace.textDocuments;
             activeFiles.forEach(file => {
                 if(file.fileName === templatefilePath) {
                     text = file.getText();
@@ -117,8 +138,11 @@ export class AdaptiveCardsMain {
         }
     }
 
-    public async ShareCard(path: string){
-        ShareByEmail("","");
+    public async ShareCard(path: string) {
+      //ShareByEmail("","");
+
+  
+      console.log(session);
     }
 
     // tslint:disable-next-line: typedef

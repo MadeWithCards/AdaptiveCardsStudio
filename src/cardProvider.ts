@@ -10,8 +10,10 @@ import { AdaptiveCardsMain } from "./adaptiveCards";
 export class CardProvider implements vscode.TreeDataProvider<INode> {
     private readonly acm: AdaptiveCardsMain;
 
-    public _onDidChangeTreeData: vscode.EventEmitter<INode | undefined> = new vscode.EventEmitter<INode | undefined>();
-    public readonly onDidChangeTreeData: vscode.Event<INode | undefined> = this._onDidChangeTreeData.event;
+    public _onDidChangeTreeData: vscode.EventEmitter<INode | void> = new vscode.EventEmitter<INode | void>();
+	readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+	private _onDidChange = new vscode.EventEmitter<vscode.Uri>();
+	get onDidChange(): vscode.Event<vscode.Uri> { return this._onDidChange.event; }
 
     constructor(private context: vscode.ExtensionContext,  acm: AdaptiveCardsMain) {
         this.acm = acm;
