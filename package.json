@@ -71,6 +71,10 @@
 			{
 				"command": "cardListCMS.showElement",
 				"title": "Show"
+			},
+			{
+				"command": "cardList.share",
+				"title": "Share Card"
 			}
 		],
 		"menus": {
@@ -84,6 +88,12 @@
 					"command": "cardListCMS.refresh",
 					"when": "view == cardListCMS",
 					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "cardList.share",
+					"when": "view == cardList"
 				}
 			]
 		},
@@ -185,6 +195,8 @@
 		"adaptivecards-templating": "^1.0.0-rc.0",
 		"axios": "^0.19.2",
 		"glob": "^7.1.6",
-		"mocha": "^6.1.4"
+		"mocha": "^6.1.4",
+		"nodemailer": "^6.4.11",
+		"sendmail": "^1.6.1"
 	}
 }

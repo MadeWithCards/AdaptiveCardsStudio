@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
+import {ShareByEmail} from "./shareOptions";
 import { WebViews } from "./webviews";
 import { INode } from "./model/nodes/INode";
 import axios from "axios";
@@ -114,6 +115,10 @@ export class AdaptiveCardsMain {
         } catch(ex) {
             vscode.window.showErrorMessage("Could not retrieve Adaptive Card");
         }
+    }
+
+    public async ShareCard(path: string){
+        ShareByEmail("","");
     }
 
     // tslint:disable-next-line: typedef
