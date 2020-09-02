@@ -3,13 +3,10 @@ import * as path from "path";
 import * as fs from "fs";
 import { WebViews } from "./webviews";
 import { isNullOrUndefined } from "util";
-
-const scopes = ["openid",
-"https://graph.microsoft.com/Mail.Send",
-"https://graph.microsoft.com/ChannelMessage.Send",
-"https://graph.microsoft.com/Chat.ReadWrite",
-"https://graph.microsoft.com/User.Read",
-"profile"];
+import { AdaptiveCardsAPIHelper } from "./graphApi";
+import { QuickPickHelper } from "./model/QuickPickHelper";
+import * as axios from "axios";
+import { scopes } from "./constants";
 
 
 export class AdaptiveCardsMain {
@@ -17,8 +14,8 @@ export class AdaptiveCardsMain {
     private panel: vscode.WebviewPanel | undefined;
     public statusBarItem: vscode.StatusBarItem;
     public readonly _context: vscode.ExtensionContext;
+    public apihelper: AdaptiveCardsAPIHelper;
     public WebViews: WebViews;
-    private axios = require("axios");
     public templates =  [];
 
     constructor(private context: vscode.ExtensionContext,extensionPath: string) {
@@ -26,21 +23,22 @@ export class AdaptiveCardsMain {
         this.context = context;
         this._extensionPath = extensionPath;
         this.WebViews = new WebViews(this._context, this._context.extensionPath);
+        this.apihelper = new AdaptiveCardsAPIHelper(this._context, this._extensionPath, null);
+        context.subscriptions.push(this.apihelper);
+
     }
 
-    public async clearCredentials(){
-        this.axios.defaults.headers.common = {
-           "Authorization": `Bearer `};
+    public async clearCredentials(): Promise<void> {
+        this.apihelper.userSession = null;
     }
 
-    public async Initialize() {
-       const session = await vscode.authentication.getSession("microsoft", scopes, { createIfNone: false });
+    public async Initialize(): Promise<void> {
+       const session: vscode.AuthenticationSession = await vscode.authentication.getSession("microsoft", scopes, { createIfNone: false });
 
         if(session != null) {
-            if(!isNullOrUndefined(session.id) && !isNullOrUndefined(!isNullOrUndefined(session.accessToken))) {
-                this.axios.defaults.headers.common = {
-                    "Authorization": `Bearer ${session.accessToken}`};
-            }
+            this.apihelper.userSession = session;
+        } else {
+            this.apihelper.userSession = null;
         }
 
     }
@@ -102,7 +100,29 @@ export class AdaptiveCardsMain {
                     ]
                 });
             }
-            this.panel.webview.html = await this.WebViews.GetWebViewContentAdaptiveCard(text,data);
+            var panelData: any =  await this.WebViews.GetWebViewContentAdaptiveCard(text,data);
+            this.panel.webview.html = panelData.html;
+
+            this.panel.webview.onDidReceiveMessage(
+                async message => {
+
+                    if(message.text === "sendEmail") {
+                        this.apihelper.SendToEmail(panelData.card,"");
+                        return;
+                    }
+
+                    if(message.text === "sendTeams"){
+                        console.log('shareEmail');
+                    }
+
+                    if(message.text === "shareCard"){
+                        console.log('shareCard');
+                    } else {
+                        console.log("Adaptive Card Output: \n");
+                        console.log(message.text);
+                    }
+
+                });
         }
     }
 
@@ -111,7 +131,7 @@ export class AdaptiveCardsMain {
         try {
             var cardTemplate: string, cardData: string = "";
             var workspacePath: string = vscode.workspace.rootPath;
-            axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
+            axios.default.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
                 cardTemplate = response.data;
                 var filePath: string  = path.join(workspacePath,cardId + ".json");
                 fs.writeFile(filePath, JSON.stringify(cardTemplate, null, 1),err => {
@@ -121,7 +141,7 @@ export class AdaptiveCardsMain {
                         });
                     });
                 });
-                axios.get("https://madewithcards.io/api/cardsv2/" + cardId + "?mode=data").then(async response => {
+                axios.default.get("https://madewithcards.io/api/cardsv2/" + cardId + "?mode=data").then(async response => {
                     cardData = response.data;
                     filePath = path.join(workspacePath, cardId + ".data.json");
                     fs.writeFile(filePath, JSON.stringify(cardData, null, 1),err => {
@@ -138,11 +158,24 @@ export class AdaptiveCardsMain {
         }
     }
 
-    public async ShareCard(path: string) {
-      //ShareByEmail("","");
+    public async SendCard(path: string): Promise<void> {
 
-  
-      console.log(session);
+        let nodeList: QuickPickHelper[] = [];
+        nodeList.push(new QuickPickHelper("Send as Teams Message to yourself", "1",false));
+        nodeList.push(new QuickPickHelper("Send as Email to yourself", "2",false));
+
+        const selectedOption: QuickPickHelper = await vscode.window.showQuickPick(nodeList,
+            { placeHolder: "How do you want to send the card?", ignoreFocusOut: false, canPickMany: false },
+        );
+        if (selectedOption) {
+
+            if(selectedOption.id === "1") {
+               await this.apihelper.SendToEmail(path, "");
+            }
+            if(selectedOption.id === "2") {
+               await this.apihelper.SendToEmail(path, "");
+            }
+        }
     }
 
     // tslint:disable-next-line: typedef
@@ -166,7 +199,7 @@ export class AdaptiveCardsMain {
 		}
     }
 
-    public async OpenCardCMS(id: string) {
+    public async OpenCardCMS(id: string): Promise<void> {
 
         // Lets get the template
         this.templates.forEach(element => {

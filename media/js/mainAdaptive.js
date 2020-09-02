@@ -29,6 +29,31 @@
             var renderedCard = adaptiveCard.render();
 
             $('#cardHost').append(renderedCard).show();
+
+
+
+            $('#shareOutlook').on('click',function(){
+               vscode.postMessage({
+                    command: 'action',
+                    text: 'sendEmail'
+                })     
+            })
+
+            $('#shareTeams').on('click',function(){
+               vscode.postMessage({
+                    command: 'action',
+                    text: 'sendTeams'
+                })     
+            })
+
+
+            $('#shareCard').on('click',function(){
+               vscode.postMessage({
+                    command: 'action',
+                    text: 'shareCard'
+                })     
+            })
+
        })
 
 }());

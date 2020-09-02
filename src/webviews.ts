@@ -14,7 +14,7 @@ export class WebViews {
         this._extensionPath = extensionPath;
     }
 
-    public async GetWebViewContentAdaptiveCard(cardContent: string, cardData: string)  {
+    public async GetWebViewContentAdaptiveCard(cardContent: string, cardData: string) {
         let editor = vscode.window.activeTextEditor;
 
         if (editor) {
@@ -64,6 +64,9 @@ export class WebViews {
         const mainstyleUri = url.with({ scheme: "vscode-resource" });
 
         url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.components.min.css"));
+        const FabricComponentStyleUri = url.with({ scheme: "vscode-resource" });
+
+        url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.min.css"));
         const FabricStyleUri = url.with({ scheme: "vscode-resource" });
 
         const ACstyle = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "editormain.css"));
@@ -75,7 +78,7 @@ export class WebViews {
 
         var designerTemplate: string = "";
         if (configName.indexOf("teams") > 0) {
-            designerTemplate = `<div class="teams-frame">
+            designerTemplate = `<div class="teams-frame flex-item">
                             <div class="teams-hexagon-outer"></div>
                             <div class="teams-inner-frame">
                                 <div class="teams-botNameAndTime">Test Bot  2:36 PM</div>
@@ -84,17 +87,23 @@ export class WebViews {
                         </div>`;
         }
         if (configName.indexOf("web") > 0) {
-            designerTemplate = `<div class="webChatInnerContainer">
+            designerTemplate = `<div class="webChatInnerContainer flex-item">
                                     <div id="cardHost"></div>
                                 </div>`;
         }
 
 
         if ( designerTemplate === "" ) {
-          designerTemplate = `<div id="cardHost"></div>`;
+          designerTemplate = `<div id="cardHost" class='flex-item'></div>`;
         }
 
-        return `<!DOCTYPE html>
+        return {
+            card : {
+                card: cardContent,
+                data: cardData,
+                complete: cardToRender,
+            },
+            html: `<!DOCTYPE html>
                 <html lang="en">
                 <head>
                     <meta charset="UTF-8">
@@ -105,36 +114,104 @@ export class WebViews {
                     <link rel="stylesheet" href="${mainstyleUri}"  nonce="${nonce}"  type="text/css" />
                     <link rel="stylesheet" href="${ACStyleUri}"  nonce="${nonce}"  type="text/css" />
                     <link rel="stylesheet" href="${FabricStyleUri}"  nonce="${nonce}"  type="text/css" />
+                    <link rel="stylesheet" href="${FabricComponentStyleUri}"  nonce="${nonce}"  type="text/css" />
                     <style type="text/css">
                     code {
                         color: var(--vscode-editor-foreground);
                         background-color: var(--vscode-editor-background);
                       }
+                      .iconSmall {
+                        height:24px;
+                        width:24px;
+                      }
+                      .button {
+                        padding:5px;
+                        transition: 0.3s;
+                      }
+                      .button:hover {
+                        background:lightgray;
+                        border-radius: 5px 5px 5px 5px;
+                        -moz-border-radius: 5px 5px 5px 5px;
+                        -webkit-border-radius: 5px 5px 5px 5px;
+                        border: 0px outset #7d7d7d;
+                        transition: 0.3s;
+                        cursor:pointer;
+                      }
+
+                      .flex-container {
+                        display: -ms-flexbox;
+                        display: -webkit-flex;
+                        display: flex;
+                        -webkit-flex-direction: column;
+                        -ms-flex-direction: column;
+                        flex-direction: column;
+                        -webkit-flex-wrap: nowrap;
+                        -ms-flex-wrap: nowrap;
+                        flex-wrap: nowrap;
+                        -webkit-justify-content: flex-start;
+                        -ms-flex-pack: start;
+                        justify-content: flex-start;
+                        -webkit-align-content: stretch;
+                        -ms-flex-line-pack: stretch;
+                        align-content: stretch;
+                        -webkit-align-items: flex-start;
+                        -ms-flex-align: start;
+                        align-items: flex-start;
+                        }
+
+                    .flex-item:nth-child(1) {
+                        -webkit-order: 0;
+                        -ms-flex-order: 0;
+                        order: 0;
+                        -webkit-flex: 0 1 auto;
+                        -ms-flex: 0 1 auto;
+                        flex: 0 1 auto;
+                        -webkit-align-self: flex-end;
+                        -ms-flex-item-align: end;
+                        align-self: flex-end;
+                        }
+
+                        .flex-item:nth-child(2) {
+                            -webkit-order: 0;
+                            -ms-flex-order: 0;
+                            order: 0;
+                            -webkit-flex: 0 1 auto;
+                            -ms-flex: 0 1 auto;
+                            flex: 0 1 auto;
+                            -webkit-align-self: flex-start;
+                            -ms-flex-item-align: start;
+                            align-self: flex-start;
+                            }
                     </style>
                 </head>
                 <body class='code'>
-                    <div style='margin-top:25px'>
-                        ${designerTemplate}
-                        <div id="out"></div>
-                        <script nonce="${nonce}" src="${jqueryUri}"></script>
-                        <script nonce="${nonce}" src="${ReactUri}"></script>
-                        <script nonce="${nonce}" src="${ReactDomUri}"></script>
-
-                        <script nonce="${nonce}" src="${FabricUri}"></script>
-                        <script nonce="${nonce}" src="${ACUri}"></script>
-                        <script nonce="${nonce}" src="${ACUFabricUri}"></script>
-
-                        <script nonce="${nonce}" src="${MarkdownUri}"></script>
-                        <script nonce="${nonce}" src="${scriptUri}"></script>
-                        <div id="divConfig" style='display:none;'>
-                            ${hostConfig}
-                        </div>
-                        <div id="divData" style='display:none;'>
-                            ${cardToRender}
+                    <div class='flex-container' style='margin-top:5px;'>
+                        <div class='flex-item' style='display:flex;flex-direction:row;padding:5px;'>
+                            <div class='button' style='margin-right:10px;' ><div id="shareOutlook" class="iconSmall ms-BrandIcon--icon96 ms-BrandIcon--outlook"></div></div>
+                            <div class='button'><div id="shareTeams"  class="iconSmall ms-BrandIcon--icon96 ms-BrandIcon--teams"></div></div>
                         </div>
                     </div>
+
+                    ${designerTemplate}
+                    <div id="out"></div>
+                    <script nonce="${nonce}" src="${jqueryUri}"></script>
+                    <script nonce="${nonce}" src="${ReactUri}"></script>
+                    <script nonce="${nonce}" src="${ReactDomUri}"></script>
+
+                    <script nonce="${nonce}" src="${FabricUri}"></script>
+                    <script nonce="${nonce}" src="${ACUri}"></script>
+                    <script nonce="${nonce}" src="${ACUFabricUri}"></script>
+
+                    <script nonce="${nonce}" src="${MarkdownUri}"></script>
+                    <script nonce="${nonce}" src="${scriptUri}"></script>
+                    <div id="divConfig" style='display:none;'>
+                        ${hostConfig}
+                    </div>
+                    <div id="divData" style='display:none;'>
+                        ${cardToRender}
+                    </div>
                 </body>
-                </html>`;
+                </html>`};
         }
     }
 

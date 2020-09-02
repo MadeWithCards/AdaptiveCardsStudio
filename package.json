@@ -7,8 +7,6 @@
 	"engines": {
 		"vscode": "^1.48.0"
 	},
-	"enableProposedApi": true,
-	"preview": true,
 	"categories": [
 		"Other",
 		"Extension Packs",
@@ -75,8 +73,8 @@
 				"title": "Show"
 			},
 			{
-				"command": "cardList.share",
-				"title": "Share Card"
+				"command": "cardList.send",
+				"title": "Send Card"
 			}
 		],
 		"menus": {
@@ -94,7 +92,7 @@
 			],
 			"view/item/context": [
 				{
-					"command": "cardList.share",
+					"command": "cardList.send",
 					"when": "view == cardList"
 				}
 			]

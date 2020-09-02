@@ -55,8 +55,8 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 
-	vscode.commands.registerCommand("cardList.share", card => {
-		acm.ShareCard(card.path);
+	vscode.commands.registerCommand("cardList.send", card => {
+		acm.SendCard(card.path);
 	});
 
 	let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
