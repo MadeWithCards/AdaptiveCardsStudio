@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
+import * as os from "os";
 import { WebViews } from "./webviews";
 import { INode } from "./model/nodes/INode";
 import axios from "axios";
 import Axios from "axios";
+import { isUndefined } from "util";
 
 export class AdaptiveCardsMain {
     private readonly _extensionPath: string;
@@ -89,28 +91,56 @@ export class AdaptiveCardsMain {
         try {
             var cardTemplate: string, cardData: string = "";
             var workspacePath: string = vscode.workspace.rootPath;
-            axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
-                cardTemplate = response.data;
-                var filePath: string  = path.join(workspacePath,cardId + ".json");
-                fs.writeFile(filePath, JSON.stringify(cardTemplate, null, 1),err => {
-                    vscode.workspace.openTextDocument(filePath).then(card => {
-                        vscode.window.showTextDocument(card, vscode.ViewColumn.One).then(async e => {
-                            await this.OpenOrUpdatePanel("","");
-                        });
-                    });
-                });
-                axios.get("https://madewithcards.io/api/cardsv2/" + cardId + "?mode=data").then(async response => {
-                    cardData = response.data;
-                    filePath = path.join(workspacePath, cardId + ".data.json");
-                    fs.writeFile(filePath, JSON.stringify(cardData, null, 1),err => {
+            vscode.window.showInformationMessage("Opening AdaptiveCard from MadeWithCards.io");
+
+            var config = vscode.workspace.getConfiguration("acstudio");
+            var downloadPath: string = config.get("cardTemporaryFolder");
+
+            if(isUndefined(downloadPath) || downloadPath === "") {
+                downloadPath = os.tmpdir();
+            }
+            if(downloadPath.toLowerCase() === "tmpdir" ) {
+                downloadPath = os.tmpdir();
+            }
+
+            if(downloadPath.toLowerCase() === "workspace" ) {
+
+                if(isUndefined(vscode.workspace.rootPath) || vscode.workspace == null || isUndefined(vscode.workspace)) {
+                    vscode.window.showErrorMessage("You need to have an active workspace when download path is set to workspace");
+                    return;
+                }
+                downloadPath = vscode.workspace.rootPath;
+            }
+
+            if(isUndefined(os.tmpdir()) ) {
+                vscode.window.showErrorMessage("You need to have an active workspace to open cards remotely");
+            } else {
+                axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
+                    cardTemplate = response.data;
+                    var filePath: string  = path.join(downloadPath,cardId + ".json");
+                    fs.writeFile(filePath, JSON.stringify(cardTemplate, null, 1),err => {
                         vscode.workspace.openTextDocument(filePath).then(card => {
-                            vscode.window.showTextDocument(card, vscode.ViewColumn.One).then(async e => {
+                            vscode.window.showTextDocument(card, vscode.ViewColumn.One, true).then(async e => {
+                                vscode.window.activeTextEditor.edit((content) => {
+                                    content.insert(vscode.window.activeTextEditor.document.positionAt(0)," ");
+                                });
                                 await this.OpenOrUpdatePanel("","");
                             });
                         });
                     });
+                    axios.get("https://madewithcards.io/api/cardsv2/" + cardId + "?mode=data").then(async response => {
+                        cardData = response.data;
+                        filePath = path.join(downloadPath, cardId + ".data.json");
+                        fs.writeFile(filePath, JSON.stringify(cardData, null, 1),err => {
+                            vscode.workspace.openTextDocument(filePath).then(card => {
+                                vscode.window.showTextDocument(card, vscode.ViewColumn.One, true).then(async e => {
+                                    await this.OpenOrUpdatePanel("","");
+                                });
+                            });
+                        });
+                    });
                 });
-            });
+            }
         } catch(ex) {
             vscode.window.showErrorMessage("Could not retrieve Adaptive Card");
         }

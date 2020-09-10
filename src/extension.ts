@@ -15,24 +15,44 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider("cardList", cardProvider);
 	vscode.window.registerTreeDataProvider("cardListCMS", cardProviderCMS);
 
+
+	// register authentication provider
+	const scope = ['user:email'];
+	context.subscriptions.push(vscode.commands.registerCommand(
+	  "cardList.refresh",
+	  async () => {
+		let token;
+
+		const result = await vscode.authentication.getSessions("microsoft", scope);
+		if (!result.length) {
+		  const session = await vscode.authentication.login("microsoft", scope);
+		  token = await session.getAccessToken();
+		} else {
+		  token = await result[0].getAccessToken();
+		}
+
+		console.log(result);
+		vscode.window.showInformationMessage(`Got token ${token}`);
+	  }
+	));
+
+
 	// register Url Handler for App
 	vscode.window.registerUriHandler({
         handleUri(uri: vscode.Uri) {
 			if(uri.toString().indexOf("adaptivecards") > 0) {
 				var cardId: string = uri.path.replace("/","");
 				acm.OpenRemoteCard(cardId);
-				console.log(uri.path.replace("/",""));
-				//vscode://tcdev.adaptivecardsstudiobeta/5d51dd2e-4ff1-4cda-bc90-eaee20c5eb6b
 			} else {
 				// noting for us, just ignore
 			}
         }
     });
 
-	vscode.commands.registerCommand("cardList.refresh", task => {
-		cardProvider.refresh();
-		}
-	);
+	// vscode.commands.registerCommand("cardList.refresh", task => {
+	// 	cardProvider.refresh();
+	// 	}
+	// );
 
 	vscode.commands.registerCommand("cardListCMS.refresh", task => {
 		cardProviderCMS.refresh();
@@ -48,6 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+
 
 	vscode.window.onDidChangeActiveTextEditor(
 		editor => {
