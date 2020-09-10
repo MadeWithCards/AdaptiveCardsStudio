@@ -188,7 +188,7 @@ export class WebViews {
                     <div class='flex-container' style='margin-top:5px;'>
                         <div class='flex-item' style='display:flex;flex-direction:row;padding:5px;'>
                             <div class='button' style='margin-right:10px;' ><div id="shareOutlook" class="iconSmall ms-BrandIcon--icon96 ms-BrandIcon--outlook"></div></div>
-                            <div class='button'><div id="shareTeams"  class="iconSmall ms-BrandIcon--icon96 ms-BrandIcon--teams"></div></div>
+                            <div class='button' style='display:none' ><div id="shareTeams"  class="iconSmall ms-BrandIcon--icon96 ms-BrandIcon--teams"></div></div>
                         </div>
                     </div>
 

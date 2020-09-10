@@ -1,4 +1,7 @@
 # Change Log
+## 1.0.1
+ - Test cards by sending them to your own Outlook
+
 ## 1.0.0
  - Removed all beta tags and made it officially 1.0
  - Updated AdaptiveCards version to 2.1.0 to support all latest features

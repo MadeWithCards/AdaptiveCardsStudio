@@ -155,6 +155,7 @@ export class AdaptiveCardsMain {
             if(isNullOrUndefined(os.tmpdir()) ) {
                 vscode.window.showErrorMessage("You need to have an active workspace to open cards remotely");
             } else {
+                var axios = require("axios");
                 axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
                     cardTemplate = response.data;
                     var filePath: string  = path.join(downloadPath,cardId + ".json");
