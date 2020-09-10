@@ -36,10 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-	vscode.commands.registerCommand("cardList.refresh", task => {
-		cardProvider.refresh();
-		}
-	);
+	// vscode.commands.registerCommand("cardList.refresh", task => {
+	// 	cardProvider.refresh();
+	// 	}
+	// );
 
 	vscode.commands.registerCommand("cardListCMS.refresh", task => {
 		cardProviderCMS.refresh();
@@ -60,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+
 
 	vscode.window.onDidChangeActiveTextEditor(
 		editor => {

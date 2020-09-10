@@ -2,10 +2,12 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"publisher": "madewithcardsio",
+	"enableProposedApi": true,
+	"preview": true,
 	"engines": {
-		"vscode": "^1.48.0"
+	  "vscode": "^1.48.0"
 	},
 	"categories": [
 		"Other",
@@ -138,6 +140,11 @@
 					"default": "",
 					"description": "(ALPHA) The Access Token used for CMS Cards"
 				},
+				"acstudio.cardTemporaryFolder": {
+					"type": "string",
+					"default": "tmpdir",
+					"description": "Folder to store temporary cards (use 'tmpdir' or 'workspace' instead of a path)"
+				},
 				"acstudio.cmsAccessUrl": {
 					"type": "string",
 					"default": "",
@@ -190,8 +197,7 @@
 		"edit"
 	],
 	"dependencies": {
-		"@microsoft/microsoft-graph-client": "^2.0.0",
-		"adaptivecards": "^1.2.6",
+		"adaptivecards": "^2.1.0",
 		"adaptivecards-templating": "^1.0.0-rc.0",
 		"axios": "^0.19.2",
 		"glob": "^7.1.6",
