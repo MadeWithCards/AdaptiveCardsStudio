@@ -173,7 +173,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/AdaptiveCards.git"
+		"url": "https://github.com/madewithcards/adaptivecardsstudio.git"
 	},
 	"license": "GNU3",
 	"icon": "icon.png",
@@ -182,7 +182,7 @@
 		"theme": "dark"
 	},
 	"bugs": {
-		"url": "https://github.com/Microsoft/AdaptiveCards/issues"
+		"url": "https://github.com/madewithcards/adaptivecardsstudio/issues"
 	},
 	"homepage": "http://www.madewithcards.io",
 	"keywords": [
