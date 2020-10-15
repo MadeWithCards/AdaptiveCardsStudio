@@ -1,4 +1,12 @@
 # Change Log
+## 1.0.4
+ - Added a new option "Auto Open Card" if disabled, card viewer does not open automatically,
+ - Added a shortcut ctrl+shift+v a to open card pane
+ - Improved the automatic detection of adaptive cards in working space
+ - Readme Updated
+## 1.0.3
+ - TBugfixes,
+ - Readme Updated
 ## 1.0.1
  - Test cards by sending them to your own Outlook
 

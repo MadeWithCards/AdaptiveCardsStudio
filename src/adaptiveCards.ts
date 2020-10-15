@@ -11,7 +11,7 @@ import { scopes } from "./constants";
 
 export class AdaptiveCardsMain {
     private readonly _extensionPath: string;
-    private panel: vscode.WebviewPanel | undefined;
+    public panel: vscode.WebviewPanel | undefined;
     public statusBarItem: vscode.StatusBarItem;
     public readonly _context: vscode.ExtensionContext;
     public apihelper: AdaptiveCardsAPIHelper;

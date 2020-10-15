@@ -2,7 +2,7 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.0.2",
+	"version": "1.0.4",
 	"publisher": "madewithcardsio",
 	"engines": {
 		"vscode": "^1.48.0"
@@ -75,6 +75,10 @@
 			{
 				"command": "cardList.send",
 				"title": "Send Card"
+			},
+			{
+				"command": "adaptivecard.open",
+				"title": "Toggle Adaptivecard Viewer"
 			}
 		],
 		"menus": {
@@ -92,14 +96,14 @@
 			],
 			"view/item/context": [
 				{
-					"command": "cardList.send",
+					"command": "cardList.showElement",
 					"when": "view == cardList"
 				}
 			]
 		},
 		"keybindings": [
 			{
-				"command": "adaptivecardviewer.open",
+				"command": "adaptivecard.open",
 				"key": "ctrl+shift+v a"
 			}
 		],
@@ -107,6 +111,11 @@
 			"type": "object",
 			"title": "Adaptive Cards Studio",
 			"properties": {
+				"acstudio.automaticallyOpen" :{
+					"type": "boolean",
+					"default": true,
+					"description": "Open the card view automatically when a card is detected"
+				},
 				"acstudio.defaultHostConfig": {
 					"type": "string",
 					"default": "microsoft-teams-dark",
@@ -142,16 +151,6 @@
 					"type": "string",
 					"default": "tmpdir",
 					"description": "Folder to store temporary cards (use 'tmpdir' or 'workspace' instead of a path)"
-				},
-				"acstudio.cmsAccessUrl": {
-					"type": "string",
-					"default": "",
-					"description": "(ALPHA) The CMS Url"
-				},
-				"acstudio.cmsFolder": {
-					"type": "string",
-					"default": "",
-					"description": "(ALPHA) Where to store temporary files from the CMS, uses workspaces root if not set"
 				}
 			}
 		}

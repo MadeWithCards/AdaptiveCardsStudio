@@ -7,9 +7,6 @@
             // Create an AdaptiveCard instance
             var adaptiveCard = new AdaptiveCards.AdaptiveCard();
 
-            // Use Fabric controls when rendering Adaptive Cards
-            ACFabric.useFabricComponents();
-
             var cardHostConfig = $('#divConfig').text();
             adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(JSON.parse(cardHostConfig));
         

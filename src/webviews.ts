@@ -42,14 +42,21 @@ export class WebViews {
 
 
         // adaptiveCards
-        let url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "fabric.min.js"));
-        const FabricUri = url.with({ scheme: "vscode-resource" });
+        //let url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "fabric.min.js"));
+        //const FabricUri = url.with({ scheme: "vscode-resource" });
 
-         url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards.min.js"));
+        let url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards.min.js"));
         const ACUri = url.with({ scheme: "vscode-resource" });
 
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards-fabric.min.js"));
-        const ACUFabricUri = url.with({ scheme: "vscode-resource" });
+        // don't use fabric for now
+        //     url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards-fabric.min.js"));
+        //     const ACUFabricUri = url.with({ scheme: "vscode-resource" });
+
+        //    url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.components.min.css"));
+        //     const FabricComponentStyleUri = url.with({ scheme: "vscode-resource" });
+
+        //    url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.min.css"));
+        //     const FabricStyleUri = url.with({ scheme: "vscode-resource" });
 
         url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "react.min.js"));
         const ReactUri = url.with({ scheme: "vscode-resource" });
@@ -62,12 +69,6 @@ export class WebViews {
 
         url = vscode.Uri.file(	path.join(this._extensionPath, "media/css/additional", configName + ".css"));
         const mainstyleUri = url.with({ scheme: "vscode-resource" });
-
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.components.min.css"));
-        const FabricComponentStyleUri = url.with({ scheme: "vscode-resource" });
-
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.min.css"));
-        const FabricStyleUri = url.with({ scheme: "vscode-resource" });
 
         const ACstyle = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "editormain.css"));
         const ACStyleUri = ACstyle.with({ scheme: "vscode-resource" });
@@ -113,8 +114,7 @@ export class WebViews {
 
                     <link rel="stylesheet" href="${mainstyleUri}"  nonce="${nonce}"  type="text/css" />
                     <link rel="stylesheet" href="${ACStyleUri}"  nonce="${nonce}"  type="text/css" />
-                    <link rel="stylesheet" href="${FabricStyleUri}"  nonce="${nonce}"  type="text/css" />
-                    <link rel="stylesheet" href="${FabricComponentStyleUri}"  nonce="${nonce}"  type="text/css" />
+
                     <style type="text/css">
                     code {
                         color: var(--vscode-editor-foreground);
@@ -198,9 +198,7 @@ export class WebViews {
                     <script nonce="${nonce}" src="${ReactUri}"></script>
                     <script nonce="${nonce}" src="${ReactDomUri}"></script>
 
-                    <script nonce="${nonce}" src="${FabricUri}"></script>
                     <script nonce="${nonce}" src="${ACUri}"></script>
-                    <script nonce="${nonce}" src="${ACUFabricUri}"></script>
 
                     <script nonce="${nonce}" src="${MarkdownUri}"></script>
                     <script nonce="${nonce}" src="${scriptUri}"></script>
