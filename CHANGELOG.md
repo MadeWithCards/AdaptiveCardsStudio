@@ -1,4 +1,6 @@
 # Change Log
+## 1.0.5
+ - Various bugfixes for most recent vscode version support
 ## 1.0.4
  - Added a new option "Auto Open Card" if disabled, card viewer does not open automatically,
  - Added a shortcut ctrl+shift+v a to open card pane

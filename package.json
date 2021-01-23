@@ -2,7 +2,7 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"publisher": "madewithcardsio",
 	"engines": {
 		"vscode": "^1.48.0"
@@ -111,7 +111,7 @@
 			"type": "object",
 			"title": "Adaptive Cards Studio",
 			"properties": {
-				"acstudio.automaticallyOpen" :{
+				"acstudio.automaticallyOpen": {
 					"type": "boolean",
 					"default": true,
 					"description": "Open the card view automatically when a card is detected"
@@ -168,7 +168,7 @@
 		"@types/node": "^10.17.30",
 		"tslint": "^5.12.1",
 		"typescript": "^3.9.7",
-		"vscode-test": "^1.3.0"
+		"vscode-test": "^1.4.1"
 	},
 	"repository": {
 		"type": "git",
@@ -195,6 +195,7 @@
 	],
 	"dependencies": {
 		"@microsoft/microsoft-graph-client": "^2.0.0",
+		"@types/vscode": "^1.51.0",
 		"adaptivecards": "^2.1.0",
 		"adaptivecards-templating": "^1.3.0",
 		"axios": "^0.19.2",

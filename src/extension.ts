@@ -59,51 +59,39 @@ export function activate(context: vscode.ExtensionContext) {
 		acm.SendCard(card.path);
 	});
 
-    vscode.commands.registerTextEditorCommand("adaptivecard.open", (te, t) => {
-        if (checkNoAdaptiveCard(te.document)) {
+    vscode.commands.registerTextEditorCommand("adaptivecard.open", async (te, t) => {
+        if (await acm.checkNoAdaptiveCard(te.document)) {
             return;
         }
 		acm.OpenOrUpdatePanel("","");
     });
 
 
-	let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
-
 
 	vscode.window.onDidChangeActiveTextEditor(
-		editor => {
+		async editor  => {
 		  let auto = vscode.workspace.getConfiguration("acstudio").get("automaticallyOpen");
 		  if(!auto || (acm.panel === undefined)) {return;}
-		  if (checkNoAdaptiveCard(activeEditor.document,false)) {
+		  if (await acm.checkNoAdaptiveCard(null,false)) {
 			return;
 		  }
-		  activeEditor = editor;
-		  acm.OpenOrUpdatePanel("","");
+		 await acm.OpenOrUpdatePanel("","");
 		},
 		null,
 		context.subscriptions
 	  );
 
-	  vscode.workspace.onDidChangeTextDocument(
-		event => {
-		  if (activeEditor && event.document === activeEditor.document &&
-			acm.panel !== undefined && acm.panel.visible) {
-			acm.OpenOrUpdatePanel("","");
+	vscode.workspace.onDidChangeTextDocument(
+		async (event: vscode.TextDocumentChangeEvent) => {
+			let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+	        if (activeEditor && event.document === activeEditor.document &&
+				acm.panel !== undefined && acm.panel.visible) {
+				await acm.OpenOrUpdatePanel("","");
 		  }
 		},
 		null,
 		context.subscriptions
 	  );
-
-	  function checkNoAdaptiveCard(document: vscode.TextDocument, displayMessage: boolean = true) {
-
-		let isNGType = !(document.languageId === "json") || document.getText().indexOf("http://adaptivecards.io/schemas/adaptive-card.json") < 0;
-		if (isNGType && displayMessage) {
-			vscode.window.showWarningMessage("Active editor doesn't show a AdaptiveCard JSON document.");
-		}
-		return isNGType;
-	}
-
 
 }
 

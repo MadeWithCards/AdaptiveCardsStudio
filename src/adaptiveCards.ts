@@ -16,6 +16,7 @@ export class AdaptiveCardsMain {
     public readonly _context: vscode.ExtensionContext;
     public apihelper: AdaptiveCardsAPIHelper;
     public WebViews: WebViews;
+    public Channel: vscode.OutputChannel;
     public templates =  [];
 
     constructor(private context: vscode.ExtensionContext,extensionPath: string) {
@@ -25,6 +26,8 @@ export class AdaptiveCardsMain {
         this.WebViews = new WebViews(this._context, this._context.extensionPath);
         this.apihelper = new AdaptiveCardsAPIHelper(this._context, this._extensionPath, null);
         context.subscriptions.push(this.apihelper);
+        this.Channel = vscode.window.createOutputChannel("AdaptiveCards");
+        this.Channel.appendLine("Log Channel Initated");
 
     }
 
@@ -42,6 +45,21 @@ export class AdaptiveCardsMain {
         }
 
     }
+
+
+	public async checkNoAdaptiveCard(document: vscode.TextDocument, displayMessage: boolean = true) : Promise<Boolean>{
+
+		if(document == null){
+            if(!vscode.window.activeTextEditor) return false;
+			document = vscode.window.activeTextEditor.document;
+		}
+		let isNGType = !(document.languageId === "json") || document.getText().indexOf("schemas/adaptive-card.json") < 0;
+		if (isNGType && displayMessage) {
+            vscode.window.showWarningMessage("Active editor doesn't show a AdaptiveCard JSON document.");
+            return false;
+		}
+		return isNGType;
+	}
 
     // tslint:disable-next-line: typedef
     public async OpenOrUpdatePanel(cardPath: string, content: string) {
@@ -109,17 +127,10 @@ export class AdaptiveCardsMain {
                     if(message.text === "sendEmail") {
                         this.apihelper.SendToEmail(panelData.card,"");
                         return;
-                    }
-
-                    if(message.text === "sendTeams"){
-                        console.log('shareEmail');
-                    }
-
-                    if(message.text === "shareCard"){
-                        console.log('shareCard');
                     } else {
-                        console.log("Adaptive Card Output: \n");
-                        console.log(message.text);
+                        await this.Channel.appendLine("Action.Submit -> ");
+                        await this.Channel.append(message.text);
+                        await this.Channel.appendLine("");
                     }
 
                 });

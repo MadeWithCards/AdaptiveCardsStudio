@@ -6,6 +6,7 @@ import * as fs from "fs";
 import { ProjectErrorNode } from "./model/nodes/ProjectErrorNode";
 import { CardNode } from "./model/CardNode";
 import { AdaptiveCardsMain } from "./adaptiveCards";
+import { WorkspaceFolderNode } from "./model/WorkspaceFolderNode";
 
 export class CardProvider implements vscode.TreeDataProvider<INode> {
     private readonly acm: AdaptiveCardsMain;
@@ -40,8 +41,7 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
     public async GetAdaptiveCardsInFolder(): Promise<INode[]> {
         console.log("ACSTUDIO - Searching for Cards");
         const items: INode[] = [];
-        let folder = vscode.workspace.rootPath;
-        vscode.window.showInformationMessage("Searching for Adaptive Cards in your workspace");
+        var folder = vscode.workspace.rootPath;
         var files = await glob.sync(folder + "/**/*.json", { ignore: ["**/node_modules/**", "./node_modules/**"] });
         var i = 0;
         files.forEach(file => {
@@ -49,16 +49,30 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
             const searchTerm = "adaptivecards.io/schemas/adaptive-card.json";
             var content = fs.readFileSync(file, "utf8");
             if (content.includes(searchTerm)) {
-                var node = new CardNode(name,file, i, this.acm);
-                items.push(node);
+                items.push(new CardNode(name,file, i, this.acm));
                 i++;
             }
         });
+        return items;
 
+        
         if(items.length === 0) {
             items.push(new ProjectErrorNode("No Cards found","","",0));
         }
-        return items;
+
+        if ( vscode.workspace.workspaceFolders.length > 1 ) {
+            var i = 0;
+            vscode.workspace.workspaceFolders.forEach(async folder => {
+                items.push(new WorkspaceFolderNode(path.dirname(folder.name),folder.name,i, this.acm,folder.name));
+                i++;
+            });
+        } else {
+
+        }
+
+
+
+       
     }
 
     public getTreeItem(element: INode): Promise<vscode.TreeItem> | vscode.TreeItem  {
