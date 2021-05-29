@@ -15,14 +15,13 @@ This extension contributes the following settings:
 
 -   `acstudio.defaultHostConfig`  : The HostConfig to be used when rendering cards
 
-Alpha and experimental:
--   `acstudio.cmsAccessToken`  : (ALPHA) Access Token for the CMS used
--   `acstudio.cmsAccessUrl`  : (ALPHA) URL To the CMS
--   `acstudio.cmsFolder`  : (ALPHA) The Folder where to store temporary files for CMS
-
 ## Usage
 
 Open the Adaptive Cards Panel and select a card.... thats all you have to do :)
+
+## Testing Cards
+
+Login to your M365 account, click the outlook icon to send the card to yourself by email. 
 
 ## Snippets
 

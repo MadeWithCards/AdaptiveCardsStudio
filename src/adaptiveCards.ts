@@ -3,18 +3,20 @@ import * as path from "path";
 import * as fs from "fs";
 import * as os from "os";
 import { WebViews } from "./webviews";
-import { INode } from "./model/nodes/INode";
-import axios from "axios";
-import Axios from "axios";
-import { isUndefined } from "util";
+import { isNullOrUndefined } from "util";
+import { AdaptiveCardsAPIHelper } from "./graphApi";
+import { QuickPickHelper } from "./model/QuickPickHelper";
+import * as axios from "axios";
+import { scopes } from "./constants";
 
 export class AdaptiveCardsMain {
     private readonly _extensionPath: string;
-    private panel: vscode.WebviewPanel | undefined;
+    public panel: vscode.WebviewPanel | undefined;
     public statusBarItem: vscode.StatusBarItem;
     public readonly _context: vscode.ExtensionContext;
+    public apihelper: AdaptiveCardsAPIHelper;
     public WebViews: WebViews;
-
+    public Channel: vscode.OutputChannel;
     public templates =  [];
 
     constructor(private context: vscode.ExtensionContext,extensionPath: string) {
@@ -22,8 +24,42 @@ export class AdaptiveCardsMain {
         this.context = context;
         this._extensionPath = extensionPath;
         this.WebViews = new WebViews(this._context, this._context.extensionPath);
+        this.apihelper = new AdaptiveCardsAPIHelper(this._context, this._extensionPath, null);
+        context.subscriptions.push(this.apihelper);
+        this.Channel = vscode.window.createOutputChannel("AdaptiveCards");
+        this.Channel.appendLine("Log Channel Initated");
+
     }
 
+    public async clearCredentials(): Promise<void> {
+        this.apihelper.userSession = null;
+    }
+
+    public async Initialize(): Promise<void> {
+       const session: vscode.AuthenticationSession = await vscode.authentication.getSession("microsoft", scopes, { createIfNone: false });
+
+        if(session != null) {
+            this.apihelper.userSession = session;
+        } else {
+            this.apihelper.userSession = null;
+        }
+
+    }
+
+
+	public async checkNoAdaptiveCard(document: vscode.TextDocument, displayMessage: boolean = true) : Promise<Boolean>{
+
+		if(document == null){
+            if(!vscode.window.activeTextEditor) return false;
+			document = vscode.window.activeTextEditor.document;
+		}
+		let isNGType = !(document.languageId === "json") || document.getText().indexOf("schemas/adaptive-card.json") < 0;
+		if (isNGType && displayMessage) {
+            vscode.window.showWarningMessage("Active editor doesn't show a AdaptiveCard JSON document.");
+            return false;
+		}
+		return isNGType;
+	}
 
     // tslint:disable-next-line: typedef
     public async OpenOrUpdatePanel(cardPath: string, content: string) {
@@ -38,7 +74,7 @@ export class AdaptiveCardsMain {
         // when a template is edited, get data from json.data instead
         if(activeEditor.document.fileName.endsWith(".data.json")) {
             var templatefilePath: string = activeEditor.document.fileName.replace(".data","");
-            var activeFiles: vscode.TextDocument[] = vscode.workspace.textDocuments;
+            const activeFiles: any = vscode.workspace.textDocuments;
             activeFiles.forEach(file => {
                 if(file.fileName === templatefilePath) {
                     text = file.getText();
@@ -82,7 +118,22 @@ export class AdaptiveCardsMain {
                     ]
                 });
             }
-            this.panel.webview.html = await this.WebViews.GetWebViewContentAdaptiveCard(text,data);
+            var panelData: any =  await this.WebViews.GetWebViewContentAdaptiveCard(text,data);
+            this.panel.webview.html = panelData.html;
+
+            this.panel.webview.onDidReceiveMessage(
+                async message => {
+
+                    if(message.text === "sendEmail") {
+                        this.apihelper.SendToEmail(panelData.card,"");
+                        return;
+                    } else {
+                        await this.Channel.appendLine("Action.Submit -> ");
+                        await this.Channel.append(message.text);
+                        await this.Channel.appendLine("");
+                    }
+
+                });
         }
     }
 
@@ -96,7 +147,7 @@ export class AdaptiveCardsMain {
             var config = vscode.workspace.getConfiguration("acstudio");
             var downloadPath: string = config.get("cardTemporaryFolder");
 
-            if(isUndefined(downloadPath) || downloadPath === "") {
+            if(isNullOrUndefined(downloadPath) || downloadPath === "") {
                 downloadPath = os.tmpdir();
             }
             if(downloadPath.toLowerCase() === "tmpdir" ) {
@@ -105,16 +156,17 @@ export class AdaptiveCardsMain {
 
             if(downloadPath.toLowerCase() === "workspace" ) {
 
-                if(isUndefined(vscode.workspace.rootPath) || vscode.workspace == null || isUndefined(vscode.workspace)) {
+                if(isNullOrUndefined(vscode.workspace.rootPath) || vscode.workspace == null || isNullOrUndefined(vscode.workspace)) {
                     vscode.window.showErrorMessage("You need to have an active workspace when download path is set to workspace");
                     return;
                 }
                 downloadPath = vscode.workspace.rootPath;
             }
 
-            if(isUndefined(os.tmpdir()) ) {
+            if(isNullOrUndefined(os.tmpdir()) ) {
                 vscode.window.showErrorMessage("You need to have an active workspace to open cards remotely");
             } else {
+                var axios = require("axios");
                 axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
                     cardTemplate = response.data;
                     var filePath: string  = path.join(downloadPath,cardId + ".json");
@@ -146,6 +198,26 @@ export class AdaptiveCardsMain {
         }
     }
 
+    public async SendCard(path: string): Promise<void> {
+
+        let nodeList: QuickPickHelper[] = [];
+        nodeList.push(new QuickPickHelper("Send as Teams Message to yourself", "1",false));
+        nodeList.push(new QuickPickHelper("Send as Email to yourself", "2",false));
+
+        const selectedOption: QuickPickHelper = await vscode.window.showQuickPick(nodeList,
+            { placeHolder: "How do you want to send the card?", ignoreFocusOut: false, canPickMany: false },
+        );
+        if (selectedOption) {
+
+            if(selectedOption.id === "1") {
+               await this.apihelper.SendToEmail(path, "");
+            }
+            if(selectedOption.id === "2") {
+               await this.apihelper.SendToEmail(path, "");
+            }
+        }
+    }
+
     // tslint:disable-next-line: typedef
     public async OpenCard(path: string) {
         if (fs.existsSync(path)) {
@@ -167,7 +239,7 @@ export class AdaptiveCardsMain {
 		}
     }
 
-    public async OpenCardCMS(id: string) {
+    public async OpenCardCMS(id: string): Promise<void> {
 
         // Lets get the template
         this.templates.forEach(element => {

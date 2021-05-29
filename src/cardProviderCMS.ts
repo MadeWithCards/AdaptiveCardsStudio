@@ -8,8 +8,8 @@ import axios from "axios";
 export class CardProviderCMS implements vscode.TreeDataProvider<INode> {
     private readonly acm: AdaptiveCardsMain;
 
-    public _onDidChangeTreeData: vscode.EventEmitter<INode | undefined> = new vscode.EventEmitter<INode | undefined>();
-    public readonly onDidChangeTreeData: vscode.Event<INode | undefined> = this._onDidChangeTreeData.event;
+    public _onDidChangeTreeData: vscode.EventEmitter<INode | void> = new vscode.EventEmitter<INode | void>();
+    public readonly onDidChangeTreeData: vscode.Event<INode | void> = this._onDidChangeTreeData.event;
 
     constructor(private context: vscode.ExtensionContext,  acm: AdaptiveCardsMain) {
         this.acm = acm;

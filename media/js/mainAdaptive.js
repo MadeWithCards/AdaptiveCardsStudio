@@ -7,9 +7,6 @@
             // Create an AdaptiveCard instance
             var adaptiveCard = new AdaptiveCards.AdaptiveCard();
 
-            // Use Fabric controls when rendering Adaptive Cards
-            ACFabric.useFabricComponents();
-
             var cardHostConfig = $('#divConfig').text();
             adaptiveCard.hostConfig = new AdaptiveCards.HostConfig(JSON.parse(cardHostConfig));
         
@@ -29,6 +26,31 @@
             var renderedCard = adaptiveCard.render();
 
             $('#cardHost').append(renderedCard).show();
+
+
+
+            $('#shareOutlook').on('click',function(){
+               vscode.postMessage({
+                    command: 'action',
+                    text: 'sendEmail'
+                })     
+            })
+
+            $('#shareTeams').on('click',function(){
+               vscode.postMessage({
+                    command: 'action',
+                    text: 'sendTeams'
+                })     
+            })
+
+
+            $('#shareCard').on('click',function(){
+               vscode.postMessage({
+                    command: 'action',
+                    text: 'shareCard'
+                })     
+            })
+
        })
 
 }());

@@ -5,8 +5,6 @@ import { CardProvider } from "./cardProvider";
 import { CardProviderCMS } from "./CardProviderCMS";
 import { AdaptiveCardsMain } from "./adaptiveCards";
 
-
-
 // tslint:disable-next-line: typedef no-empty
 export function activate(context: vscode.ExtensionContext) {
 	const acm : AdaptiveCardsMain = new AdaptiveCardsMain(context,context.extensionPath);
@@ -15,26 +13,15 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider("cardList", cardProvider);
 	vscode.window.registerTreeDataProvider("cardListCMS", cardProviderCMS);
 
+	context.subscriptions.push(acm);
+	acm.Initialize();
 
-	// register authentication provider
-	const scope = ['user:email'];
-	context.subscriptions.push(vscode.commands.registerCommand(
-	  "cardList.refresh",
-	  async () => {
-		let token;
 
-		const result = await vscode.authentication.getSessions("microsoft", scope);
-		if (!result.length) {
-		  const session = await vscode.authentication.login("microsoft", scope);
-		  token = await session.getAccessToken();
-		} else {
-		  token = await result[0].getAccessToken();
+	vscode.authentication.onDidChangeSessions(async e => {
+		if (e.provider.id === "microsoft") {
+			await acm.clearCredentials();
 		}
-
-		console.log(result);
-		vscode.window.showInformationMessage(`Got token ${token}`);
-	  }
-	));
+	});
 
 
 	// register Url Handler for App
@@ -67,22 +54,39 @@ export function activate(context: vscode.ExtensionContext) {
 		acm.OpenCardCMS(card.path);
 	});
 
-	let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+
+	vscode.commands.registerCommand("cardList.send", card => {
+		acm.SendCard(card.path);
+	});
+
+    vscode.commands.registerTextEditorCommand("adaptivecard.open", async (te, t) => {
+        if (await acm.checkNoAdaptiveCard(te.document)) {
+            return;
+        }
+		acm.OpenOrUpdatePanel("","");
+    });
+
 
 
 	vscode.window.onDidChangeActiveTextEditor(
-		editor => {
-		  activeEditor = editor;
-		  acm.OpenOrUpdatePanel("","");
+		async editor  => {
+		  let auto = vscode.workspace.getConfiguration("acstudio").get("automaticallyOpen");
+		  if(!auto || (acm.panel === undefined)) {return;}
+		  if (await acm.checkNoAdaptiveCard(null,false)) {
+			return;
+		  }
+		 await acm.OpenOrUpdatePanel("","");
 		},
 		null,
 		context.subscriptions
 	  );
 
-	  vscode.workspace.onDidChangeTextDocument(
-		event => {
-		  if (activeEditor && event.document === activeEditor.document) {
-			acm.OpenOrUpdatePanel("","");
+	vscode.workspace.onDidChangeTextDocument(
+		async (event: vscode.TextDocumentChangeEvent) => {
+			let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+	        if (activeEditor && event.document === activeEditor.document &&
+				acm.panel !== undefined && acm.panel.visible) {
+				await acm.OpenOrUpdatePanel("","");
 		  }
 		},
 		null,
