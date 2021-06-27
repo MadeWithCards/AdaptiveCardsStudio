@@ -4,13 +4,10 @@ import { CardNodeChild } from "./CardNodeChild";
 import { AdaptiveCardsMain } from "../adaptiveCards";
 import * as path from 'path';
 
-export class CardNodeCMS implements INode {
+export class CardNodeOnline implements INode {
 
     private readonly acm: AdaptiveCardsMain;
     private readonly Author: string;
-    private readonly LastChange : Date;
-    private readonly IsShareable: boolean;
-    private readonly State: string;
 
 
     constructor(
@@ -18,20 +15,15 @@ export class CardNodeCMS implements INode {
         readonly path: string,
         readonly id: number,
         author: string,
-        lastChange: string,
-        isShareable: boolean,
-        state: string,
         acm: AdaptiveCardsMain) {
         this.acm = acm;
         this.Author = author;
-        this.State = state;
     }
 
-    public getIcon(priority: string) {
-        console.log(priority);
+    public getIcon() {
          return {
-          light: path.join(this.acm._context.extensionPath, 'resources/light', `${priority}.svg`),
-          dark: path.join(this.acm._context.extensionPath, 'resources/dark', `${priority}.svg`),
+          light: path.join(this.acm._context.extensionPath, 'resources', `adaptivecards.png`),
+          dark: path.join(this.acm._context.extensionPath, 'resources', `adaptivecards.png`),
       };
 
 
@@ -40,12 +32,12 @@ export class CardNodeCMS implements INode {
     public getTreeItem(): vscode.TreeItem {
         return {
             label: this.label,
-            collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
+            collapsibleState: vscode.TreeItemCollapsibleState.None,
             description: this.Author,
-            iconPath: this.getIcon(this.State),
+            iconPath: this.getIcon(),
             contextValue: "ac-CardBase",
             command: {
-                command: "cardListCMS.showElement",
+                command: "cardListOnline.showElement",
                 title: "",
                 arguments: [this],
             }
@@ -55,8 +47,8 @@ export class CardNodeCMS implements INode {
 
         try {
             var list: INode[] = [];
-            list.push(new CardNodeChild("Template",this.path,"template",0,this.acm));
-            list.push(new CardNodeChild("Data",this.path.replace(".json",".data.json"),"data",1,this.acm));
+            list.push(new CardNodeChild("Template",this.path,"template",this.id,this.acm));
+            list.push(new CardNodeChild("Data",this.path.replace(".ac",".acdata"),"data",this.id,this.acm));
             return list;
           } catch (error) {
               vscode.window.showErrorMessage(error);

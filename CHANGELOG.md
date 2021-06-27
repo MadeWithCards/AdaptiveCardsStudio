@@ -1,4 +1,11 @@
 # Change Log
+## 1.01.0
+ - Updated AdaptiveCards libraries to latest released version
+ - Added AdaptiveExpressions library, cards in VSCode now have full support for expressions, regex etc
+ 
+ **New Feature - Online Cards**
+ First update in a few, the first update allows you to load all MadeWithCards.io examples directly from within VSCode to get a
+ kickstart in Card development
 ## 1.0.5
  - Various bugfixes for most recent vscode version support
 ## 1.0.4

@@ -1,0 +1,23 @@
+{
+	"iconDefinitions": {
+		"_file_dark": {
+			"iconPath": "./resources/ac20file.svg"
+		},
+		"_file_light": {
+			"iconPath": "./resources/ac20file.svg"
+		}
+	},
+
+	"file": "_file_dark",
+	"fileExtensions": {
+		"ac": "_file_dark",
+        "acdata": "_file_dark"
+	},
+	"light": {
+		"file": "_file_light",
+		"fileExtensions": {
+            "ac": "_file_dark",
+            "acdata": "_file_dark"
+		}
+	}
+}

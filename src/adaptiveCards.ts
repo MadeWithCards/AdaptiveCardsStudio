@@ -8,6 +8,7 @@ import { AdaptiveCardsAPIHelper } from "./graphApi";
 import { QuickPickHelper } from "./model/QuickPickHelper";
 import * as axios from "axios";
 import { scopes } from "./constants";
+import { Card } from "./model/AdaptiveOnlineEntry";
 
 export class AdaptiveCardsMain {
     private readonly _extensionPath: string;
@@ -17,7 +18,7 @@ export class AdaptiveCardsMain {
     public apihelper: AdaptiveCardsAPIHelper;
     public WebViews: WebViews;
     public Channel: vscode.OutputChannel;
-    public templates =  [];
+    public templates : Card[] = [];
 
     constructor(private context: vscode.ExtensionContext,extensionPath: string) {
         this._context = context;
@@ -72,8 +73,8 @@ export class AdaptiveCardsMain {
         let text: string, data: string = "";
         // when a data file is edited, get text from json template instead
         // when a template is edited, get data from json.data instead
-        if(activeEditor.document.fileName.endsWith(".data.json")) {
-            var templatefilePath: string = activeEditor.document.fileName.replace(".data","");
+        if(activeEditor.document.fileName.endsWith(".data.json") || activeEditor.document.fileName.endsWith(".acdata")) {
+            var templatefilePath: string = activeEditor.document.fileName.replace(".data","").replace(".acdata","");
             const activeFiles: any = vscode.workspace.textDocuments;
             activeFiles.forEach(file => {
                 if(file.fileName === templatefilePath) {
@@ -87,7 +88,7 @@ export class AdaptiveCardsMain {
             data = activeEditor.document.getText();
         } else {
             text = activeEditor.document.getText();
-            var dataFilePath: string = activeEditor.document.fileName.replace(".json",".data.json");
+            var dataFilePath: string = activeEditor.document.fileName.replace(".json",".acdata");
             if (fs.existsSync(dataFilePath)) {
                 data = fs.readFileSync(dataFilePath, "ascii");
             } else {
@@ -239,32 +240,81 @@ export class AdaptiveCardsMain {
 		}
     }
 
-    public async OpenCardCMS(id: string): Promise<void> {
 
-        // Lets get the template
-        this.templates.forEach(element => {
-            if(element._id == id){
-                var path = vscode.workspace.rootPath + "_" + id + ".json";
-                var pathData = vscode.workspace.rootPath + "_" + id + ".data.json";
-                if (fs.existsSync(path)) {
-                    vscode.workspace.openTextDocument(path).then(async card => {
-                        vscode.window.showTextDocument(card, vscode.ViewColumn.One).then(async e => {
+    public async DownloadAndOpenCard(id: string, downloadPath: string, name: string) {
+
+        var axios = require("axios");
+        axios.get("https://api.madewithcards.io/cards/id/" + id + "/0?mode=full").then( response => {
+
+        
+            var filePath: string  = path.join(downloadPath,name + ".json");
+            var fileDataPath: string  = path.join(downloadPath,name + ".data.json");
+            
+            fs.writeFile(filePath, JSON.stringify(response.data.template, null, 1),err => {
+                vscode.workspace.openTextDocument(filePath).then(card => {
+                    vscode.window.showTextDocument(card, vscode.ViewColumn.One, true).then(async e => {
+                        if(vscode.window.activeTextEditor != null) {
+                            vscode.window.activeTextEditor.edit((content) => {
+                                content.insert(vscode.window.activeTextEditor.document.positionAt(0)," ");
+                            });
+                        }
+                        await this.OpenOrUpdatePanel("","");
+                    });
+                });
+
+                fs.writeFile(fileDataPath, JSON.stringify(response.data.data, null, 1),err => {
+                    vscode.workspace.openTextDocument(fileDataPath).then(card => {
+                        vscode.window.showTextDocument(card, vscode.ViewColumn.One, true).then(async e => {
+                            if(vscode.window.activeTextEditor != null) {
+                                vscode.window.activeTextEditor.edit((content) => {
+                                    content.insert(vscode.window.activeTextEditor.document.positionAt(0)," ");
+                                });
+                            }
                             await this.OpenOrUpdatePanel("","");
                         });
-                      });
-                } else {
-                    fs.writeFile(path, JSON.stringify(element.instances[0].json),err => {
-                        fs.writeFile(pathData, JSON.stringify(element.instances[0].data),err => {
-                            vscode.workspace.openTextDocument(path).then(card => {
-                                vscode.window.showTextDocument(card, vscode.ViewColumn.One).then(async e => {
-                                    await this.OpenOrUpdatePanel("","");
-                                });
-                            });
-                        });
                     });
-                }
-            }
+                });
+            });
         });
+    }
+
+    public async OpenCardOnline(id: string): Promise<void> {
+
+        if(vscode.workspace.workspaceFolders.length == 0){
+            vscode.window.showErrorMessage("You need to have an open folder or workspace to open cards");
+        } else{
+            // Lets get the template
+            this.templates.forEach(async element => {
+                if(element.id == id){
+                    let name = await vscode.window.showInputBox({ placeHolder: element.name });
+                    if (name) {
+
+                        var path = "";
+                        if(vscode.workspace.workspaceFolders.length > 1){
+                            let nodeList: QuickPickHelper[] = [];
+
+                            vscode.workspace.workspaceFolders.forEach(element => {
+                                nodeList.push(new QuickPickHelper(element.name, element.uri.fsPath,false));
+                            });
+                    
+                            const selectedOption: QuickPickHelper = await vscode.window.showQuickPick(nodeList,
+                                { placeHolder: "Target Workspace for the card.", ignoreFocusOut: false, canPickMany: false },
+                            );
+                            if (selectedOption) {
+                                path = selectedOption.id;
+                            }
+                        } else{
+                            path = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                        }
+
+                        if(path != "") {
+                            this.DownloadAndOpenCard(id,path,name);
+                        }
+                    }
+                }
+            });
+        }
+
     }
 
     private _disposables: vscode.Disposable[] = [];

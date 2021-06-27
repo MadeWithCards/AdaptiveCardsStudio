@@ -2,16 +2,16 @@
 
 import * as vscode from "vscode";
 import { CardProvider } from "./cardProvider";
-import { CardProviderCMS } from "./CardProviderCMS";
+import { CardProviderOnline } from "./CardProviderOnline";
 import { AdaptiveCardsMain } from "./adaptiveCards";
 
 // tslint:disable-next-line: typedef no-empty
 export function activate(context: vscode.ExtensionContext) {
 	const acm : AdaptiveCardsMain = new AdaptiveCardsMain(context,context.extensionPath);
 	const cardProvider : CardProvider = new CardProvider(context,acm);
-	const cardProviderCMS : CardProviderCMS = new CardProviderCMS(context,acm);
+	const cardProviderOnline : CardProviderOnline = new CardProviderOnline(context,acm);
 	vscode.window.registerTreeDataProvider("cardList", cardProvider);
-	vscode.window.registerTreeDataProvider("cardListCMS", cardProviderCMS);
+	vscode.window.registerTreeDataProvider("cardListOnline", cardProviderOnline);
 
 	context.subscriptions.push(acm);
 	acm.Initialize();
@@ -41,8 +41,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	}
 	// );
 
-	vscode.commands.registerCommand("cardListCMS.refresh", task => {
-		cardProviderCMS.refresh();
+	vscode.commands.registerCommand("cardListOnline.refresh", task => {
+		cardProviderOnline.refresh();
 		}
 	);
 
@@ -50,8 +50,8 @@ export function activate(context: vscode.ExtensionContext) {
 		acm.OpenCard(card.path);
 	});
 
-	vscode.commands.registerCommand("cardListCMS.showElement", card  => {
-		acm.OpenCardCMS(card.path);
+	vscode.commands.registerCommand("cardListOnline.showElement", card  => {
+		acm.OpenCardOnline(card.path);
 	});
 
 
@@ -65,21 +65,6 @@ export function activate(context: vscode.ExtensionContext) {
         }
 		acm.OpenOrUpdatePanel("","");
     });
-
-
-
-	vscode.window.onDidChangeActiveTextEditor(
-		async editor  => {
-		  let auto = vscode.workspace.getConfiguration("acstudio").get("automaticallyOpen");
-		  if(!auto || (acm.panel === undefined)) {return;}
-		  if (await acm.checkNoAdaptiveCard(null,false)) {
-			return;
-		  }
-		 await acm.OpenOrUpdatePanel("","");
-		},
-		null,
-		context.subscriptions
-	  );
 
 	vscode.workspace.onDidChangeTextDocument(
 		async (event: vscode.TextDocumentChangeEvent) => {

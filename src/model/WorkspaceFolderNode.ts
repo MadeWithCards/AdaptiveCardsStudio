@@ -11,10 +11,10 @@ import { ProjectErrorNode } from "./nodes/ProjectErrorNode";
 export class WorkspaceFolderNode implements INode {
 
     private readonly acm: AdaptiveCardsMain;
-    private readonly folder: string;
-    constructor(private readonly label: string, readonly path: string, readonly id: number, acm: AdaptiveCardsMain, folder: string) {
+    private readonly localPath: string;
+    constructor(private readonly label: string, readonly path: string, readonly id: number, acm: AdaptiveCardsMain) {
         this.acm = acm;
-        this.folder = folder;
+        this.localPath = path;
     }
 
     public getTreeItem(): vscode.TreeItem {
@@ -38,7 +38,21 @@ export class WorkspaceFolderNode implements INode {
         console.log("ACSTUDIO - Searching for Cards");
         const items: INode[] = [];
 
-        var files = await glob.sync(this.folder + "/**/*.json", { ignore: ["**/node_modules/**", "./node_modules/**"] });
+
+        var files = await glob.sync(this.localPath.substring(1) + "/**/*.json", { ignore: ["**/node_modules/**", "./node_modules/**"] });
+        var i = 0;
+        files.forEach(file => {
+            var name = path.basename(file,".json");
+            const searchTerm = "adaptivecards.io/schemas/adaptive-card.json";
+            var content = fs.readFileSync(file, "utf8");
+            if (content.includes(searchTerm)) {
+                var node = new CardNode(name,file, i, this.acm);
+                items.push(node);
+                i++;
+            }
+        });
+
+        var files = await glob.sync(this.localPath.substring(1) + "/**/*.ac", { ignore: ["**/node_modules/**", "./node_modules/**"] });
         var i = 0;
         files.forEach(file => {
             var name = path.basename(file,".json");
