@@ -45,10 +45,10 @@ export class WebViews {
 
         url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards-templating.min.js"));
         const ACTemplatingUri = url.with({ scheme: "vscode-resource" });
-        
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptive-expressions.min.js"));
+
+        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "browser.min.js"));
         const ACExpressionsUri = url.with({ scheme: "vscode-resource" });
-        
+              
 
         url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "markdown-it.min.js"));
         const MarkdownUri = url.with({ scheme: "vscode-resource" });

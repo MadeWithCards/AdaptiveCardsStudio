@@ -73,8 +73,8 @@ export class AdaptiveCardsMain {
         let text: string, data: string = "";
         // when a data file is edited, get text from json template instead
         // when a template is edited, get data from json.data instead
-        if(activeEditor.document.fileName.endsWith(".data.json") || activeEditor.document.fileName.endsWith(".acdata")) {
-            var templatefilePath: string = activeEditor.document.fileName.replace(".data","").replace(".acdata","");
+        if(activeEditor.document.fileName.endsWith(".data.json")) {
+            var templatefilePath: string = activeEditor.document.fileName.replace(".data","");
             const activeFiles: any = vscode.workspace.textDocuments;
             activeFiles.forEach(file => {
                 if(file.fileName === templatefilePath) {
@@ -88,7 +88,7 @@ export class AdaptiveCardsMain {
             data = activeEditor.document.getText();
         } else {
             text = activeEditor.document.getText();
-            var dataFilePath: string = activeEditor.document.fileName.replace(".json",".acdata");
+            var dataFilePath: string = activeEditor.document.fileName.replace(".json",".data.json");
             if (fs.existsSync(dataFilePath)) {
                 data = fs.readFileSync(dataFilePath, "ascii");
             } else {
