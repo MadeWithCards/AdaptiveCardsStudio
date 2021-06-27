@@ -40,29 +40,15 @@ export class WebViews {
         const jqueryPath = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "jquery.min.js"));
         const jqueryUri = jqueryPath.with({ scheme: "vscode-resource" });
 
-
-        // adaptiveCards
-        //let url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "fabric.min.js"));
-        //const FabricUri = url.with({ scheme: "vscode-resource" });
-
         let url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards.min.js"));
         const ACUri = url.with({ scheme: "vscode-resource" });
 
-        // don't use fabric for now
-        //     url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards-fabric.min.js"));
-        //     const ACUFabricUri = url.with({ scheme: "vscode-resource" });
-
-        //    url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.components.min.css"));
-        //     const FabricComponentStyleUri = url.with({ scheme: "vscode-resource" });
-
-        //    url = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "fabric.min.css"));
-        //     const FabricStyleUri = url.with({ scheme: "vscode-resource" });
-
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "react.min.js"));
-        const ReactUri = url.with({ scheme: "vscode-resource" });
-
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "react-dom.min.js"));
-        const ReactDomUri = url.with({ scheme: "vscode-resource" });
+        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards-templating.min.js"));
+        const ACTemplatingUri = url.with({ scheme: "vscode-resource" });
+        
+        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptive-expressions.min.js"));
+        const ACExpressionsUri = url.with({ scheme: "vscode-resource" });
+        
 
         url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "markdown-it.min.js"));
         const MarkdownUri = url.with({ scheme: "vscode-resource" });
@@ -72,6 +58,11 @@ export class WebViews {
 
         const ACstyle = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "editormain.css"));
         const ACStyleUri = ACstyle.with({ scheme: "vscode-resource" });
+
+        const fabricStyle = vscode.Uri.file( path.join(this._extensionPath, "media/css", "fabric.min.css"));
+        const fabricUri = fabricStyle.with({ scheme: "vscode-resource" });
+        
+
 
 
         const nonce = this.getNonce();
@@ -114,6 +105,7 @@ export class WebViews {
 
                     <link rel="stylesheet" href="${mainstyleUri}"  nonce="${nonce}"  type="text/css" />
                     <link rel="stylesheet" href="${ACStyleUri}"  nonce="${nonce}"  type="text/css" />
+                    <link rel="stylesheet" href="${fabricUri}"  nonce="${nonce}"  type="text/css" />
 
                     <style type="text/css">
                     code {
@@ -195,10 +187,10 @@ export class WebViews {
                     ${designerTemplate}
                     <div id="out"></div>
                     <script nonce="${nonce}" src="${jqueryUri}"></script>
-                    <script nonce="${nonce}" src="${ReactUri}"></script>
-                    <script nonce="${nonce}" src="${ReactDomUri}"></script>
 
                     <script nonce="${nonce}" src="${ACUri}"></script>
+                    <script nonce="${nonce}" src="${ACTemplatingUri}"></script>
+                    <script nonce="${nonce}" src="${ACExpressionsUri}"></script>
 
                     <script nonce="${nonce}" src="${MarkdownUri}"></script>
                     <script nonce="${nonce}" src="${scriptUri}"></script>

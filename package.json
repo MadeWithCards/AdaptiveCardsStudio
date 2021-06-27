@@ -2,7 +2,7 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"publisher": "madewithcardsio",
 	"engines": {
 		"vscode": "^1.48.0"
@@ -16,10 +16,17 @@
 	"activationEvents": [
 		"*",
 		"onView:cardOutline",
-		"onView:cardCMSOutline"
+		"onView:cardOnlineOutline"
 	],
 	"main": "./out/extension",
 	"contributes": {
+		"iconThemes": [
+			{
+			  "id": "adaptivecard",
+			  "label": "AdaptiveCard",
+			  "path": "./resources/adaptivecard-file.json"
+			}
+		  ],
 		"snippets": [
 			{
 				"language": "json",
@@ -42,8 +49,8 @@
 					"name": "Workspace Cards"
 				},
 				{
-					"id": "cardListCMS",
-					"name": "CMS Cards"
+					"id": "cardListOnline",
+					"name": "Online Cards"
 				}
 			]
 		},
@@ -57,7 +64,7 @@
 				}
 			},
 			{
-				"command": "cardListCMS.refresh",
+				"command": "cardListOnline.refresh",
 				"title": "Refresh",
 				"icon": {
 					"light": "resources/light/refresh.svg",
@@ -69,7 +76,7 @@
 				"title": "Show"
 			},
 			{
-				"command": "cardListCMS.showElement",
+				"command": "cardListOnline.showElement",
 				"title": "Show"
 			},
 			{
@@ -89,8 +96,8 @@
 					"group": "navigation"
 				},
 				{
-					"command": "cardListCMS.refresh",
-					"when": "view == cardListCMS",
+					"command": "cardListOnline.refresh",
+					"when": "view == cardListOnline",
 					"group": "navigation"
 				}
 			],
@@ -142,10 +149,10 @@
 						"Windows Notifications (Preview)"
 					]
 				},
-				"acstudio.cmsAccessToken": {
+				"acstudio.onlineAccessToken": {
 					"type": "string",
 					"default": "",
-					"description": "(ALPHA) The Access Token used for CMS Cards"
+					"description": "(ALPHA) The Access Token used for Online Cards"
 				},
 				"acstudio.cardTemporaryFolder": {
 					"type": "string",

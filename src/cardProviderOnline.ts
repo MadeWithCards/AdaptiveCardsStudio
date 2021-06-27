@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 import {INode} from "./model/nodes/INode";
 import { ProjectErrorNode } from "./model/nodes/ProjectErrorNode";
-import { CardNodeCMS } from "./model/CardNodeCMS";
+import { CardNodeOnline } from "./model/CardNodeOnline";
 import { AdaptiveCardsMain } from "./adaptiveCards";
+import { Card, CardListResponse } from "./model/AdaptiveOnlineEntry";
 import axios from "axios";
 
-export class CardProviderCMS implements vscode.TreeDataProvider<INode> {
+export class CardProviderOnline implements vscode.TreeDataProvider<INode> {
     private readonly acm: AdaptiveCardsMain;
 
     public _onDidChangeTreeData: vscode.EventEmitter<INode | void> = new vscode.EventEmitter<INode | void>();
@@ -26,20 +27,20 @@ export class CardProviderCMS implements vscode.TreeDataProvider<INode> {
 
     public async getChildren(element?: INode): Promise<INode[]> {
         if(!element) {
-            console.log("ACSTUDIO - Get CMS Nodes");
-            vscode.window.showInformationMessage("Searching for Adaptive Cards in the CMS");
-            return await this.GetCardsFromCMS();
+            console.log("ACSTUDIO - Get Online Nodes");
+            vscode.window.showInformationMessage("Loading online example cards");
+            return await this.GetCardsFromOnline();
 
         }
         return element.getChildren(this.context);
     }
 
-    public async GetCardsFromCMS() : Promise<INode[]> {
+    public async GetCardsFromOnline() : Promise<INode[]> {
         var items: INode[] = [];
 
         var config = vscode.workspace.getConfiguration('acstudio');
-        var listUri: string = config.get("cmsAccessUrl");
-        var token: string = config.get("cmsAccessToken");
+        var listUri: string = "https://api.madewithcards.io/cards?skip=0&top=100&mode=full";
+        var token: string = "..."; //config.get("onlineAccessToken");
 
         if(token !== ""){
             await axios.get(listUri, {
@@ -48,13 +49,15 @@ export class CardProviderCMS implements vscode.TreeDataProvider<INode> {
                 }
               })
               .then((res) => {
-                console.log("ACSTUDIO - Found CMS Nodes");
-                  var templates = res.data.templates;
+                console.log("ACSTUDIO - Found Online Nodes");
+                 var response : CardListResponse = res.data;
                   var i: number = 0;
-                  console.log(templates);
-                  templates.forEach(element => {
-                    var node = new CardNodeCMS(element.name, element["_id"], i, "Matt Hidinger",
-                      "07.07.2020", true, element.instances[0].state, this.acm);
+                  response.cards.forEach(element  => {
+                    var node = new CardNodeOnline(
+                        element.name,
+                        element.id, i,
+                        "MadeWithCards",
+                         this.acm);
                     this.acm.templates.push(element);
                     i++;
                     items.push(node);
@@ -64,11 +67,11 @@ export class CardProviderCMS implements vscode.TreeDataProvider<INode> {
               })
               .catch((error) => {
                 console.log(error);
-                items.push(new ProjectErrorNode("CMS Access not available",error,"",1));
+                items.push(new ProjectErrorNode("Online Access not available",error,"",1));
                 return items;
               });
           } else {
-            items.push(new ProjectErrorNode("CMS Access not available","","",1));
+            items.push(new ProjectErrorNode("Online Access not available","","",1));
           }
           return items;
     }
