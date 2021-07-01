@@ -36,6 +36,8 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
             return await this.GetAdaptiveCardsInFolder();
         }
         return element.getChildren(this.context);
+
+        return null;
     }
 
     public async GetAdaptiveCardsInFolder(): Promise<INode[]> {
@@ -43,6 +45,7 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
         const items: INode[] = [];
 
         var i = 0;
+        if(vscode.workspace == null || vscode.workspace.workspaceFolders == null) return null;
         if(vscode.workspace.workspaceFolders.length > 1) {
             vscode.workspace.workspaceFolders.forEach(async folder => {
                 items.push(new WorkspaceFolderNode(folder.name,folder.uri.path,i, this.acm));
@@ -77,14 +80,13 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
 
         }
         
-        if(items.length === 0) {
-            items.push(new ProjectErrorNode("Your workspace does not contain any Adaptive Cards","","",0));
-        }
-
         return items;
     }
 
     public getTreeItem(element: INode): Promise<vscode.TreeItem> | vscode.TreeItem  {
+        if(vscode.workspace == null || vscode.workspace.workspaceFolders == null || vscode.workspace.workspaceFolders.length == 0) {
+            return null
+        }
         return element.getTreeItem();
     }
 

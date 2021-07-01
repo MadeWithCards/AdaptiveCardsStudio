@@ -2,11 +2,12 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"publisher": "madewithcardsio",
 	"engines": {
-		"vscode": "^1.48.0"
+		"vscode": "^1.5.0"
 	},
+	"enableProposedApi": true,
 	"categories": [
 		"Other",
 		"Extension Packs",
@@ -18,33 +19,44 @@
 		"onView:cardOutline",
 		"onView:cardOnlineOutline"
 	],
+	"capabilities": {
+		"virtualWorkspaces": true,
+		"untrustedWorkspaces": {
+			"supported": true
+		}
+	},
 	"main": "./out/extension",
 	"contributes": {
-		"iconThemes": [
+		"iconThemes": [{
+			"id": "adaptivecard",
+			"label": "AdaptiveCard",
+			"path": "./resources/adaptivecard-file.json"
+		}],
+		"snippets": [{
+			"language": "json",
+			"path": "media/snippets.json"
+		}],
+		"viewsContainers": {
+			"activitybar": [{
+				"id": "cardLists",
+				"title": "Adaptive Cards",
+				"icon": "resources/adaptivecards.png"
+			}]
+		},
+		"viewsWelcome": [
 			{
-			  "id": "adaptivecard",
-			  "label": "AdaptiveCard",
-			  "path": "./resources/adaptivecard-file.json"
-			}
-		  ],
-		"snippets": [
+				"view": "cardList",
+				"contents": "You need to have an open workspace folder.\n[Open Folder](command:vscode.openFolder)",
+				"when": "workbenchState == empty"
+			},
 			{
-				"language": "json",
-				"path": "media/snippets.json"
+				"view": "cardList",
+				"contents": "We could not find any AdaptiveCards in your workspace.",
+				"when": "workbenchState != empty && workspaceFolderCount != 0"
 			}
 		],
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "cardLists",
-					"title": "Adaptive Cards",
-					"icon": "resources/adaptivecards.png"
-				}
-			]
-		},
 		"views": {
-			"cardLists": [
-				{
+			"cardLists": [{
 					"id": "cardList",
 					"name": "Workspace Cards"
 				},
@@ -54,8 +66,7 @@
 				}
 			]
 		},
-		"commands": [
-			{
+		"commands": [{
 				"command": "cardList.refresh",
 				"title": "Refresh",
 				"icon": {
@@ -76,6 +87,10 @@
 				"title": "Show"
 			},
 			{
+				"command": "cardList.addCard",
+				"title": "Add"
+			},
+			{
 				"command": "cardListOnline.showElement",
 				"title": "Show"
 			},
@@ -89,8 +104,7 @@
 			}
 		],
 		"menus": {
-			"view/title": [
-				{
+			"view/title": [{
 					"command": "cardList.refresh",
 					"when": "view == cardList",
 					"group": "navigation"
@@ -101,19 +115,15 @@
 					"group": "navigation"
 				}
 			],
-			"view/item/context": [
-				{
-					"command": "cardList.showElement",
-					"when": "view == cardList"
-				}
-			]
+			"view/item/context": [{
+				"command": "cardList.showElement",
+				"when": "view == cardList"
+			}]
 		},
-		"keybindings": [
-			{
-				"command": "adaptivecard.open",
-				"key": "ctrl+shift+v a"
-			}
-		],
+		"keybindings": [{
+			"command": "adaptivecard.open",
+			"key": "ctrl+shift+v a"
+		}],
 		"configuration": {
 			"type": "object",
 			"title": "Adaptive Cards Studio",
