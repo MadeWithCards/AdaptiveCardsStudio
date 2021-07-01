@@ -3,7 +3,7 @@ import {INode} from "./model/nodes/INode";
 import { ProjectErrorNode } from "./model/nodes/ProjectErrorNode";
 import { CardNodeOnline } from "./model/CardNodeOnline";
 import { AdaptiveCardsMain } from "./adaptiveCards";
-import { Card, CardListResponse } from "./model/AdaptiveOnlineEntry";
+import { CardCategoryResponse } from "./model/AdaptiveOnlineEntry";
 import axios from "axios";
 
 export class CardProviderOnline implements vscode.TreeDataProvider<INode> {
@@ -29,36 +29,32 @@ export class CardProviderOnline implements vscode.TreeDataProvider<INode> {
         if(!element) {
             console.log("ACSTUDIO - Get Online Nodes");
             vscode.window.showInformationMessage("Loading online example cards");
-            return await this.GetCardsFromOnline();
+            return await this.GetCardCategoriesOnline();
 
         }
         return element.getChildren(this.context);
     }
 
-    public async GetCardsFromOnline() : Promise<INode[]> {
+
+    public async GetCardCategoriesOnline(): Promise<INode[]> {
         var items: INode[] = [];
 
         var config = vscode.workspace.getConfiguration('acstudio');
-        var listUri: string = "https://api.madewithcards.io/cards?skip=0&top=100&mode=full";
+        var listUri: string = "https://api.madewithcards.io/meta/categories";
         var token: string = "..."; //config.get("onlineAccessToken");
 
         if(token !== ""){
-            await axios.get(listUri, {
-                headers: {
-                  'Authorization': `Bearer ${token}`
-                }
-              })
+            await axios.get(listUri)
               .then((res) => {
                 console.log("ACSTUDIO - Found Online Nodes");
-                 var response : CardListResponse = res.data;
+                 var response : CardCategoryResponse[] = res.data;
                   var i: number = 0;
-                  response.cards.forEach(element  => {
+                  response.forEach(element  => {
                     var node = new CardNodeOnline(
                         element.name,
-                        element.id, i,
-                        "MadeWithCards",
+                        "", element.id,
+                        "",
                          this.acm);
-                    this.acm.templates.push(element);
                     i++;
                     items.push(node);
                   });
@@ -74,8 +70,9 @@ export class CardProviderOnline implements vscode.TreeDataProvider<INode> {
             items.push(new ProjectErrorNode("Online Access not available","","",1));
           }
           return items;
-    }
 
+
+    }
 
     public getTreeItem(element: INode): Promise<vscode.TreeItem> | vscode.TreeItem  {
         return element.getTreeItem();

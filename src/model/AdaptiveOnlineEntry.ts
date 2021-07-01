@@ -1,4 +1,9 @@
 
+export class CardCategoryResponse {
+    name: string;
+    id:   number;
+}
+
 export class AdaptiveOnlineEntryInstance {
     updatedAt?:      Date;
     state?:          string;

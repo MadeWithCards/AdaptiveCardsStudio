@@ -27,21 +27,27 @@
 	},
 	"main": "./out/extension",
 	"contributes": {
-		"iconThemes": [{
-			"id": "adaptivecard",
-			"label": "AdaptiveCard",
-			"path": "./resources/adaptivecard-file.json"
-		}],
-		"snippets": [{
-			"language": "json",
-			"path": "media/snippets.json"
-		}],
+		"iconThemes": [
+			{
+				"id": "adaptivecard",
+				"label": "AdaptiveCard",
+				"path": "./resources/adaptivecard-file.json"
+			}
+		],
+		"snippets": [
+			{
+				"language": "json",
+				"path": "media/snippets.json"
+			}
+		],
 		"viewsContainers": {
-			"activitybar": [{
-				"id": "cardLists",
-				"title": "Adaptive Cards",
-				"icon": "resources/adaptivecards.png"
-			}]
+			"activitybar": [
+				{
+					"id": "cardLists",
+					"title": "Adaptive Cards",
+					"icon": "resources/adaptivecards.png"
+				}
+			]
 		},
 		"viewsWelcome": [
 			{
@@ -56,7 +62,8 @@
 			}
 		],
 		"views": {
-			"cardLists": [{
+			"cardLists": [
+				{
 					"id": "cardList",
 					"name": "Workspace Cards"
 				},
@@ -66,7 +73,8 @@
 				}
 			]
 		},
-		"commands": [{
+		"commands": [
+			{
 				"command": "cardList.refresh",
 				"title": "Refresh",
 				"icon": {
@@ -104,7 +112,8 @@
 			}
 		],
 		"menus": {
-			"view/title": [{
+			"view/title": [
+				{
 					"command": "cardList.refresh",
 					"when": "view == cardList",
 					"group": "navigation"
@@ -115,15 +124,19 @@
 					"group": "navigation"
 				}
 			],
-			"view/item/context": [{
-				"command": "cardList.showElement",
-				"when": "view == cardList"
-			}]
+			"view/item/context": [
+				{
+					"command": "cardList.showElement",
+					"when": "view == cardList"
+				}
+			]
 		},
-		"keybindings": [{
-			"command": "adaptivecard.open",
-			"key": "ctrl+shift+v a"
-		}],
+		"keybindings": [
+			{
+				"command": "adaptivecard.open",
+				"key": "ctrl+shift+v a"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "Adaptive Cards Studio",
