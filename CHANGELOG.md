@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.3
+ - Improved AdaptiveCard recognition in WSL2
+ - Added welcome view to treeview
 ## 1.1.2
  - Fix extension in WSL2
 ## 1.1.1
