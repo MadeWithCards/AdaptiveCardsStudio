@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.1.6
+ - Fixed a rare WSL2 bug
+ - Added a new starting experience inline with other VSCode Extensions
+ - Demo cards are now grouped by category
+## 1.1.6
+ - Fixed Card recognition in multi folder workspaces
+ - Minor other fixes
 ## 1.1.3
  - Improved AdaptiveCard recognition in WSL2
  - Added welcome view to treeview

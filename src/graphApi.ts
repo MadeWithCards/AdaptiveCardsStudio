@@ -3,8 +3,6 @@ import { scopes } from "./constants";
 import * as fs from "fs";
 import { isNullOrUndefined } from "util";
 import * as path from "path";
-import * as ACData from "adaptivecards-templating";
-import { IEvaluationContext } from "adaptivecards-templating";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 
@@ -39,9 +37,6 @@ export class AdaptiveCardsAPIHelper {
 
     // tslint:disable-next-line: typedef
     public async SendToEmail(card: any, cardName: string) {
-
-        await this.SendToTeams(card,cardName);
-        return;
 
         // validate Session if not set
         if (this.userSession == null || isNullOrUndefined(this.userSession.accessToken)) {

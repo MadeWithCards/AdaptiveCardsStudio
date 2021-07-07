@@ -53,7 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand("cardListOnline.showElement", card  => {
 		acm.OpenCardOnline(card.path);
 	});
-
+	vscode.commands.registerCommand("cardList.addCard", card => {
+		acm.AddCard();
+	});
 
 	vscode.commands.registerCommand("cardList.send", card => {
 		acm.SendCard(card.path);
