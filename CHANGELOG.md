@@ -1,6 +1,9 @@
 # Change Log
 
 ## 1.1.6
+ - Updated to Adaptive Cards v1.5
+ - https://adaptivecards.io/blog/2021/Announcing-1.5/
+## 1.1.6
  - Fixed a rare WSL2 bug
  - Added a new starting experience inline with other VSCode Extensions
  - Demo cards are now grouped by category
