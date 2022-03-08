@@ -3,7 +3,7 @@
 (function () {
        const vscode = acquireVsCodeApi();
        $(document).ready(function(){
-               
+         try {
             // Create an AdaptiveCard instance
             var adaptiveCard = new AdaptiveCards.AdaptiveCard();
 
@@ -50,7 +50,9 @@
                     text: 'shareCard'
                 })     
             })
-
+         } catch(ex) {
+            $('#cardHost').append(ex)
+         }   
        })
 
 }());

@@ -1,11 +1,29 @@
 # Change Log
-## 1.01.0
+
+## 1.1.6
+ - Updated to Adaptive Cards v1.5
+ - https://adaptivecards.io/blog/2021/Announcing-1.5/
+## 1.1.6
+ - Fixed a rare WSL2 bug
+ - Added a new starting experience inline with other VSCode Extensions
+ - Demo cards are now grouped by category
+## 1.1.6
+ - Fixed Card recognition in multi folder workspaces
+ - Minor other fixes
+## 1.1.3
+ - Improved AdaptiveCard recognition in WSL2
+ - Added welcome view to treeview
+## 1.1.2
+ - Fix extension in WSL2
+## 1.1.1
  - Updated AdaptiveCards libraries to latest released version
  - Added AdaptiveExpressions library, cards in VSCode now have full support for expressions, regex etc
- 
+ - Various smaller bugs squashed
+
  **New Feature - Online Cards**
  First update in a few, the first update allows you to load all MadeWithCards.io examples directly from within VSCode to get a
  kickstart in Card development
+
 ## 1.0.5
  - Various bugfixes for most recent vscode version support
 ## 1.0.4

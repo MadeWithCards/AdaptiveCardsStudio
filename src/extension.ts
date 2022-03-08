@@ -2,7 +2,7 @@
 
 import * as vscode from "vscode";
 import { CardProvider } from "./cardProvider";
-import { CardProviderOnline } from "./CardProviderOnline";
+import { CardProviderOnline } from "./cardProviderOnline";
 import { AdaptiveCardsMain } from "./adaptiveCards";
 
 // tslint:disable-next-line: typedef no-empty
@@ -36,10 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-	// vscode.commands.registerCommand("cardList.refresh", task => {
-	// 	cardProvider.refresh();
-	// 	}
-	// );
+	vscode.commands.registerCommand("cardList.refresh", task => {
+		cardProvider.refresh();
+		}
+	);
 
 	vscode.commands.registerCommand("cardListOnline.refresh", task => {
 		cardProviderOnline.refresh();
@@ -53,7 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand("cardListOnline.showElement", card  => {
 		acm.OpenCardOnline(card.path);
 	});
-
+	vscode.commands.registerCommand("cardList.addCard", card => {
+		acm.AddCard();
+	});
 
 	vscode.commands.registerCommand("cardList.send", card => {
 		acm.SendCard(card.path);

@@ -36,6 +36,8 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
             return await this.GetAdaptiveCardsInFolder();
         }
         return element.getChildren(this.context);
+
+        return null;
     }
 
     public async GetAdaptiveCardsInFolder(): Promise<INode[]> {
@@ -43,6 +45,7 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
         const items: INode[] = [];
 
         var i = 0;
+        if(vscode.workspace == null || vscode.workspace.workspaceFolders == null) return null;
         if(vscode.workspace.workspaceFolders.length > 1) {
             vscode.workspace.workspaceFolders.forEach(async folder => {
                 items.push(new WorkspaceFolderNode(folder.name,folder.uri.path,i, this.acm));
@@ -50,7 +53,20 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
             });
          } else{
             var i = 0;
-            var files = await glob.sync(vscode.workspace.workspaceFolders[0].uri.path.substring(1) + "/**/*.json", { ignore: ["**/node_modules/**", "./node_modules/**"] });
+            var files = await glob.sync(
+                vscode.workspace.workspaceFolders[0].uri.path + "/**/*.json", 
+                { 
+                ignore: ["**/node_modules/**", "./node_modules/**"],
+                }
+            );
+            if(files.length == 0) {
+                files = await glob.sync(
+                    vscode.workspace.workspaceFolders[0].uri.path.substring(1) + "/**/*.json", 
+                    { 
+                    ignore: ["**/node_modules/**", "./node_modules/**"],
+                    }
+                ); 
+            }
             files.forEach(file => {
                 var name = path.basename(file,".json");
                 const searchTerm = "adaptivecards.io/schemas/adaptive-card.json";
@@ -62,29 +78,15 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
                 }
             });
     
-            var files = await glob.sync(vscode.workspace.workspaceFolders[0].uri.path.substring(1) + "/**/*.ac", { ignore: ["**/node_modules/**", "./node_modules/**"] });
-            var i = 0;
-            files.forEach(file => {
-                var name = path.basename(file,".json");
-                const searchTerm = "adaptivecards.io/schemas/adaptive-card.json";
-                var content = fs.readFileSync(file, "utf8");
-                if (content.includes(searchTerm)) {
-                    var node = new CardNode(name,file, i, this.acm);
-                    items.push(node);
-                    i++;
-                }
-            });
-
         }
         
-        if(items.length === 0) {
-            items.push(new ProjectErrorNode("Your workspace does not contain any Adaptive Cards","","",0));
-        }
-
         return items;
     }
 
     public getTreeItem(element: INode): Promise<vscode.TreeItem> | vscode.TreeItem  {
+        if(vscode.workspace == null || vscode.workspace.workspaceFolders == null || vscode.workspace.workspaceFolders.length == 0) {
+            return null
+        }
         return element.getTreeItem();
     }
 

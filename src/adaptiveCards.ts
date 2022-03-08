@@ -48,6 +48,177 @@ export class AdaptiveCardsMain {
     }
 
 
+	public async AddCard() : Promise<Boolean>{
+
+        if(vscode.workspace != null && vscode.workspace.workspaceFolders.length > 0) {
+            var folder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+            var cardFilePath: string = await this.ValidateFileName(path.join(folder, "newCard.json"));
+            var dataFilePath: string = await this.ValidateFileName(path.join(folder, "newCard.data.json"));
+
+            var dataFileData = {
+                "title": "Publish Adaptive Card Schema",
+                "description": "Now that we have defined the main rules and features of the format, we need to produce a schema and publish it to GitHub. The schema will be the starting point of our reference documentation.",
+                "creator": {
+                    "name": "Matt Hidinger",
+                    "profileImage": "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg"
+                },
+                "createdUtc": "2017-02-14T06:08:39Z",
+                "viewUrl": "https://adaptivecards.io",
+                "properties": [
+                    {
+                        "key": "Board",
+                        "value": "Adaptive Cards"
+                    },
+                    {
+                        "key": "List",
+                        "value": "Backlog"
+                    },
+                    {
+                        "key": "Assigned to",
+                        "value": "Matt Hidinger"
+                    },
+                    {
+                        "key": "Due date",
+                        "value": "Not set"
+                    }
+                ]
+            }
+
+            var cardFileData = {
+                "type": "AdaptiveCard",
+                "body": [
+                    {
+                        "type": "TextBlock",
+                        "size": "Medium",
+                        "weight": "Bolder",
+                        "text": "${title}"
+                    },
+                    {
+                        "type": "ColumnSet",
+                        "columns": [
+                            {
+                                "type": "Column",
+                                "items": [
+                                    {
+                                        "type": "Image",
+                                        "style": "Person",
+                                        "url": "${creator.profileImage}",
+                                        "size": "Small"
+                                    }
+                                ],
+                                "width": "auto"
+                            },
+                            {
+                                "type": "Column",
+                                "items": [
+                                    {
+                                        "type": "TextBlock",
+                                        "weight": "Bolder",
+                                        "text": "${creator.name}",
+                                        "wrap": true
+                                    },
+                                    {
+                                        "type": "TextBlock",
+                                        "spacing": "None",
+                                        "text": "Created {{DATE(${createdUtc},SHORT)}}",
+                                        "isSubtle": true,
+                                        "wrap": true
+                                    }
+                                ],
+                                "width": "stretch"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "${description}",
+                        "wrap": true
+                    },
+                    {
+                        "type": "FactSet",
+                        "facts": [
+                            {
+                                "$data": "${properties}",
+                                "title": "${key}:",
+                                "value": "${value}"
+                            }
+                        ]
+                    }
+                ],
+                "actions": [
+                    {
+                        "type": "Action.ShowCard",
+                        "title": "Set due date",
+                        "card": {
+                            "type": "AdaptiveCard",
+                            "body": [
+                                {
+                                    "type": "Input.Date",
+                                    "id": "dueDate"
+                                },
+                                {
+                                    "type": "Input.Text",
+                                    "id": "comment",
+                                    "placeholder": "Add a comment",
+                                    "isMultiline": true
+                                }
+                            ],
+                            "actions": [
+                                {
+                                    "type": "Action.Submit",
+                                    "title": "OK"
+                                }
+                            ],
+                            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
+                        }
+                    },
+                    {
+                        "type": "Action.OpenUrl",
+                        "title": "View",
+                        "url": "${viewUrl}"
+                    }
+                ],
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "version": "1.4"
+            }
+
+            this.writeFile(cardFilePath,JSON.stringify(cardFileData, null, "\t")).then(() =>{
+                this.writeFile(dataFilePath,JSON.stringify(dataFileData, null, "\t")).then(()=> {
+                    this.OpenCard(cardFilePath);
+                    vscode.commands.executeCommand("cardList.refresh");
+                })
+            });
+
+        }
+
+
+		return true;
+	}
+
+    public async ValidateFileName(fileName, increment = 0) : Promise<string> {
+
+        try {
+            if (fs.existsSync(fileName)) {
+              increment += 1;
+              return this.ValidateFileName(fileName.replace(".json","") + increment + ".json")
+            } else {
+                return fileName;
+            }
+          } catch(err) {
+
+            return "";
+        }
+    }
+
+
+    public writeFile = async(filename, data) => {
+        return await fs.writeFile(filename, data, async err => {
+            if(err) {
+                console.log(err);
+            }
+        })
+      }
+
 	public async checkNoAdaptiveCard(document: vscode.TextDocument, displayMessage: boolean = true) : Promise<Boolean>{
 
 		if(document == null){
@@ -73,8 +244,8 @@ export class AdaptiveCardsMain {
         let text: string, data: string = "";
         // when a data file is edited, get text from json template instead
         // when a template is edited, get data from json.data instead
-        if(activeEditor.document.fileName.endsWith(".data.json") || activeEditor.document.fileName.endsWith(".acdata")) {
-            var templatefilePath: string = activeEditor.document.fileName.replace(".data","").replace(".acdata","");
+        if(activeEditor.document.fileName.endsWith(".data.json")) {
+            var templatefilePath: string = activeEditor.document.fileName.replace(".data","");
             const activeFiles: any = vscode.workspace.textDocuments;
             activeFiles.forEach(file => {
                 if(file.fileName === templatefilePath) {
@@ -88,7 +259,7 @@ export class AdaptiveCardsMain {
             data = activeEditor.document.getText();
         } else {
             text = activeEditor.document.getText();
-            var dataFilePath: string = activeEditor.document.fileName.replace(".json",".acdata");
+            var dataFilePath: string = activeEditor.document.fileName.replace(".json",".data.json");
             if (fs.existsSync(dataFilePath)) {
                 data = fs.readFileSync(dataFilePath, "ascii");
             } else {
@@ -128,7 +299,12 @@ export class AdaptiveCardsMain {
                     if(message.text === "sendEmail") {
                         this.apihelper.SendToEmail(panelData.card,"");
                         return;
-                    } else {
+                    } 
+                    if(message.text === "sendTeams") {
+                        this.apihelper.SendToTeams(panelData.card,"");
+                        return;
+                    } 
+                    else {
                         await this.Channel.appendLine("Action.Submit -> ");
                         await this.Channel.append(message.text);
                         await this.Channel.appendLine("");
@@ -168,7 +344,7 @@ export class AdaptiveCardsMain {
                 vscode.window.showErrorMessage("You need to have an active workspace to open cards remotely");
             } else {
                 var axios = require("axios");
-                axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
+                axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then(async response => {
                     cardTemplate = response.data;
                     var filePath: string  = path.join(downloadPath,cardId + ".json");
                     fs.writeFile(filePath, JSON.stringify(cardTemplate, null, 1),err => {
@@ -183,9 +359,9 @@ export class AdaptiveCardsMain {
                     });
                     axios.get("https://madewithcards.io/api/cardsv2/" + cardId + "?mode=data").then(async response => {
                         cardData = response.data;
-                        filePath = path.join(downloadPath, cardId + ".data.json");
-                        fs.writeFile(filePath, JSON.stringify(cardData, null, 1),err => {
-                            vscode.workspace.openTextDocument(filePath).then(card => {
+                        var filePathdata = path.join(downloadPath, cardId + ".data.json");
+                        fs.writeFile(filePathdata, JSON.stringify(cardData, null, 1),err => {
+                            vscode.workspace.openTextDocument(filePathdata).then(card => {
                                 vscode.window.showTextDocument(card, vscode.ViewColumn.One, true).then(async e => {
                                     await this.OpenOrUpdatePanel("","");
                                 });
@@ -213,9 +389,9 @@ export class AdaptiveCardsMain {
             if(selectedOption.id === "1") {
                await this.apihelper.SendToEmail(path, "");
             }
-            if(selectedOption.id === "2") {
-               await this.apihelper.SendToEmail(path, "");
-            }
+            // if(selectedOption.id === "2") {
+            //    await this.apihelper.SendToEmail(path, "");
+            // }
         }
     }
 
@@ -259,6 +435,7 @@ export class AdaptiveCardsMain {
                             });
                         }
                         await this.OpenOrUpdatePanel("","");
+                        vscode.commands.executeCommand("cardList.refresh");
                     });
                 });
 
@@ -271,6 +448,7 @@ export class AdaptiveCardsMain {
                                 });
                             }
                             await this.OpenOrUpdatePanel("","");
+                            vscode.commands.executeCommand("cardList.refresh");
                         });
                     });
                 });
@@ -280,7 +458,7 @@ export class AdaptiveCardsMain {
 
     public async OpenCardOnline(id: string): Promise<void> {
 
-        if(vscode.workspace.workspaceFolders.length == 0){
+        if(vscode.workspace.workspaceFolders == undefined || vscode.workspace.workspaceFolders.length == 0){
             vscode.window.showErrorMessage("You need to have an open folder or workspace to open cards");
         } else{
             // Lets get the template

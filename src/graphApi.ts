@@ -3,8 +3,6 @@ import { scopes } from "./constants";
 import * as fs from "fs";
 import { isNullOrUndefined } from "util";
 import * as path from "path";
-import * as ACData from "adaptivecards-templating";
-import { IEvaluationContext } from "adaptivecards-templating";
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 
@@ -39,6 +37,7 @@ export class AdaptiveCardsAPIHelper {
 
     // tslint:disable-next-line: typedef
     public async SendToEmail(card: any, cardName: string) {
+
         // validate Session if not set
         if (this.userSession == null || isNullOrUndefined(this.userSession.accessToken)) {
             const session: vscode.AuthenticationSession =
@@ -93,6 +92,41 @@ export class AdaptiveCardsAPIHelper {
             vscode.window.showErrorMessage("You card could not be sent, please try again");
         }
     }
+
+
+    public async SendToTeams(card: any, cardName: string) {
+        // validate Session if not set
+        if (this.userSession == null || isNullOrUndefined(this.userSession.accessToken)) {
+            const session: vscode.AuthenticationSession =
+                await vscode.authentication.getSession("microsoft", scopes, { createIfNone: true });
+            if(session != null && !isNullOrUndefined(session.accessToken)) {
+                this.userSession = session;
+            } else {
+                vscode.window.showErrorMessage("You need to login to your M365 Account first");
+                return;
+            }
+        }
+
+        var cardPayload: any  = card.complete;;
+        var data: any = {
+            "jsonContent": `${cardPayload}`
+        }
+
+
+
+        var axios: AxiosInstance = require("axios");
+        axios.defaults.headers.common = {
+            "Authorization": `Bearer ${this.userSession.accessToken}`};
+
+        var result: AxiosResponse = await axios.post("https://dev.teams.microsoft.com/api/card/adaptive", data);
+
+        if(result.status === 202) {
+            vscode.window.showInformationMessage("You card was sent");
+        } else {
+            vscode.window.showErrorMessage("You card could not be sent, please try again");
+        }
+    }
+
     private _disposables: vscode.Disposable[] = [];
 	// tslint:disable-next-line: typedef
 	public dispose() {

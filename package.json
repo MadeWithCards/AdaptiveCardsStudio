@@ -2,10 +2,10 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.1.0",
+	"version": "1.1.7",
 	"publisher": "madewithcardsio",
 	"engines": {
-		"vscode": "^1.48.0"
+		"vscode": "^1.5.0"
 	},
 	"categories": [
 		"Other",
@@ -18,15 +18,21 @@
 		"onView:cardOutline",
 		"onView:cardOnlineOutline"
 	],
+	"capabilities": {
+		"virtualWorkspaces": true,
+		"untrustedWorkspaces": {
+			"supported": true
+		}
+	},
 	"main": "./out/extension",
 	"contributes": {
 		"iconThemes": [
 			{
-			  "id": "adaptivecard",
-			  "label": "AdaptiveCard",
-			  "path": "./resources/adaptivecard-file.json"
+				"id": "adaptivecard",
+				"label": "AdaptiveCard",
+				"path": "./resources/adaptivecard-file.json"
 			}
-		  ],
+		],
 		"snippets": [
 			{
 				"language": "json",
@@ -42,6 +48,18 @@
 				}
 			]
 		},
+		"viewsWelcome": [
+			{
+				"view": "cardList",
+				"contents": "You need to have an open workspace folder.\n[Open Folder](command:vscode.openFolder)",
+				"when": "workbenchState == empty"
+			},
+			{
+				"view": "cardList",
+				"contents": "We could not find any AdaptiveCards in your workspace.\n[Add your first Card](command:cardList.addCard)",
+				"when": "workbenchState != empty && workspaceFolderCount != 0"
+			}
+		],
 		"views": {
 			"cardLists": [
 				{
@@ -76,6 +94,14 @@
 				"title": "Show"
 			},
 			{
+				"command": "cardList.addCard",
+				"title": "Add",
+				"icon": {
+					"light": "resources/light/document.svg",
+					"dark": "resources/dark/document.svg"
+				}
+			},
+			{
 				"command": "cardListOnline.showElement",
 				"title": "Show"
 			},
@@ -99,11 +125,20 @@
 					"command": "cardListOnline.refresh",
 					"when": "view == cardListOnline",
 					"group": "navigation"
+				},
+				{
+					"command": "cardList.addCard",
+					"when": "view == cardList",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "cardList.showElement",
+					"when": "view == cardList"
+				},
+				{
+					"command": "cardList.addCard",
 					"when": "view == cardList"
 				}
 			]
@@ -163,16 +198,21 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "npm run compile && node ./node_modules/vscode/bin/test"
+		"test": "npm run compile && node ./node_modules/vscode/bin/test",
+		"vscode:prepublish": "npm run -S esbuild-base --minify",
+		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+		"esbuild": "npm run -S esbuild-base -- --sourcemap",
+		"esbuild-watch": "npm run -S esbuild-base -- --sourcemap --watch",
+		"test-compile": "tsc -p ./"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^5.2.6",
 		"@types/node": "^10.17.30",
+		"esbuild": "^0.12.15",
 		"tslint": "^5.12.1",
 		"typescript": "^3.9.7"
 	},
@@ -202,8 +242,8 @@
 	"dependencies": {
 		"@microsoft/microsoft-graph-client": "^2.0.0",
 		"@types/vscode": "^1.52.0",
-		"adaptivecards": "^2.1.0",
-		"adaptivecards-templating": "^1.3.0",
+		"adaptive-expressions": "^4.13.6",
+		"adaptivecards-templating": "^2.1.0",
 		"axios": "^0.19.2",
 		"glob": "^7.1.6",
 		"mocha": "^6.1.4",
