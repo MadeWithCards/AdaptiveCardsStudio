@@ -299,7 +299,12 @@ export class AdaptiveCardsMain {
                     if(message.text === "sendEmail") {
                         this.apihelper.SendToEmail(panelData.card,"");
                         return;
-                    } else {
+                    } 
+                    if(message.text === "sendTeams") {
+                        this.apihelper.SendToTeams(panelData.card,"");
+                        return;
+                    } 
+                    else {
                         await this.Channel.appendLine("Action.Submit -> ");
                         await this.Channel.append(message.text);
                         await this.Channel.appendLine("");
@@ -339,7 +344,7 @@ export class AdaptiveCardsMain {
                 vscode.window.showErrorMessage("You need to have an active workspace to open cards remotely");
             } else {
                 var axios = require("axios");
-                axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then( response => {
+                axios.get("https://madewithcards.io/api/cardsv2/" + cardId).then(async response => {
                     cardTemplate = response.data;
                     var filePath: string  = path.join(downloadPath,cardId + ".json");
                     fs.writeFile(filePath, JSON.stringify(cardTemplate, null, 1),err => {
@@ -354,9 +359,9 @@ export class AdaptiveCardsMain {
                     });
                     axios.get("https://madewithcards.io/api/cardsv2/" + cardId + "?mode=data").then(async response => {
                         cardData = response.data;
-                        filePath = path.join(downloadPath, cardId + ".data.json");
-                        fs.writeFile(filePath, JSON.stringify(cardData, null, 1),err => {
-                            vscode.workspace.openTextDocument(filePath).then(card => {
+                        var filePathdata = path.join(downloadPath, cardId + ".data.json");
+                        fs.writeFile(filePathdata, JSON.stringify(cardData, null, 1),err => {
+                            vscode.workspace.openTextDocument(filePathdata).then(card => {
                                 vscode.window.showTextDocument(card, vscode.ViewColumn.One, true).then(async e => {
                                     await this.OpenOrUpdatePanel("","");
                                 });
@@ -384,9 +389,9 @@ export class AdaptiveCardsMain {
             if(selectedOption.id === "1") {
                await this.apihelper.SendToEmail(path, "");
             }
-            if(selectedOption.id === "2") {
-               await this.apihelper.SendToEmail(path, "");
-            }
+            // if(selectedOption.id === "2") {
+            //    await this.apihelper.SendToEmail(path, "");
+            // }
         }
     }
 
