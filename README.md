@@ -3,7 +3,7 @@
 
 ![AC Studio ](https://madewithcards.blob.core.windows.net/uploads/29bb3d02-2158-40b8-8420-4dd1f15da34c-acstudio.png)
 
-<video src='https://www.youtube.com/watch?v=pMoy1peu81Q' width=180 />
+![Watch the introduction Video on Youtube](https://www.youtube.com/watch?v=pMoy1peu81Q)
 
 
 ## Features
@@ -49,4 +49,4 @@ Snippets for Adaptive Card Samples:
 ## SampleData
 
 When editing templates its a tremendous help to have sample data available. The Extension lets you create and store sample data for your templates easily.
-
+You can also download samples directly from MadeWithCards
