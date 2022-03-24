@@ -3,6 +3,9 @@
 
 ![AC Studio ](https://madewithcards.blob.core.windows.net/uploads/29bb3d02-2158-40b8-8420-4dd1f15da34c-acstudio.png)
 
+<video src='https://www.youtube.com/watch?v=pMoy1peu81Q' width=180 />
+
+
 ## Features
 
 With AdaptiveCards Studio you can author cards directly in Visual Studio Code. The Extension automatically detects all Adaptive Cards in your working space and lets you easily edit the card template and sample data.
@@ -47,6 +50,3 @@ Snippets for Adaptive Card Samples:
 
 When editing templates its a tremendous help to have sample data available. The Extension lets you create and store sample data for your templates easily.
 
-## CMS Usage
-
-The CMS interoperability is in alpha preview, to connect the extension to your self hosted CMS set the config values above to your URL and access token. The only way to get an access token right now is using developer tools in your browser and inspecting the calls when logged in to your CMS. This is an alpha proof of concept and will have a proper login mechanism soon.
