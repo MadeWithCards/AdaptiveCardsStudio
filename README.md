@@ -3,7 +3,7 @@
 
 ![AC Studio ](https://madewithcards.blob.core.windows.net/uploads/29bb3d02-2158-40b8-8420-4dd1f15da34c-acstudio.png)
 
-![Watch the introduction Video on Youtube](https://www.youtube.com/watch?v=pMoy1peu81Q)
+🎥 [Watch the introduction Video on Youtube ](https://www.youtube.com/watch?v=pMoy1peu81Q)
 
 
 ## Features
