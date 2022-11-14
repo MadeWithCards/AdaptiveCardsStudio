@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.8
+ - readme updates
+ - fixed shortcut and set default to ctrl+shift+o + a
 ## 1.1.6
  - Updated to Adaptive Cards v1.5
  - https://adaptivecards.io/blog/2021/Announcing-1.5/
