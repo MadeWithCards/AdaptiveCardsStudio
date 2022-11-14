@@ -5,6 +5,9 @@
 
 ![AC Studio ](https://madewithcards.blob.core.windows.net/uploads/29bb3d02-2158-40b8-8420-4dd1f15da34c-acstudio.png)
 
+🎥 [Watch the introduction Video on Youtube ](https://www.youtube.com/watch?v=pMoy1peu81Q)
+
+
 ## Features
 
 With AdaptiveCards Studio you can author cards directly in Visual Studio Code. The Extension automatically detects all Adaptive Cards in your working space and lets you easily edit the card template and sample data.
@@ -54,3 +57,4 @@ In the Sample Cards category you can download all cards from the MadeWithCards.i
 I'll never ask for anything, the page and extension will always be free. However, if you value what we do and want to give back, just go to my sponsor page and support me!
 
 [![GHSponsor](https://img.shields.io/github/sponsors/deejaytc?label=Sponsor%20me%20on%20Github)](https://img.shields.io/github/sponsors/deejaytc)
+
