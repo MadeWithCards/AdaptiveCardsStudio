@@ -44,30 +44,39 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
         console.log("ACSTUDIO - Searching for Cards");
         const items: INode[] = [];
 
+        var config = vscode.workspace.getConfiguration('acstudio');
+        var ignoredFolders = config.get<string[]>('ignoredFolders');
+
+        console.log("ignoredFolders->", ignoredFolders);
+
         var i = 0;
         if(vscode.workspace == null || vscode.workspace.workspaceFolders == null) return null;
         if(vscode.workspace.workspaceFolders.length > 1) {
             vscode.workspace.workspaceFolders.forEach(async folder => {
-                items.push(new WorkspaceFolderNode(folder.name,folder.uri.path,i, this.acm));
-                i++;
+
+                if(!ignoredFolders.includes(folder.name)) {
+                    items.push(new WorkspaceFolderNode(folder.name,folder.uri.path,i, this.acm));
+                    i++;
+                }
             });
          } else{
             var i = 0;
             var files = await glob.sync(
                 vscode.workspace.workspaceFolders[0].uri.path + "/**/*.json", 
                 { 
-                ignore: ["**/node_modules/**", "./node_modules/**"],
+                ignore: ["**/node_modules/**", "./node_modules/**", ...ignoredFolders],
                 }
             );
             if(files.length == 0) {
                 files = await glob.sync(
                     vscode.workspace.workspaceFolders[0].uri.path.substring(1) + "/**/*.json", 
                     { 
-                    ignore: ["**/node_modules/**", "./node_modules/**"],
+                    ignore: ["**/node_modules/**", "./node_modules/**", ...ignoredFolders],
                     }
                 ); 
             }
             files.forEach(file => {
+                if(ignoredFolders.some(v=> file.includes(v))) return;
                 var name = path.basename(file,".json");
                 const searchTerm = "adaptivecards.io/schemas/adaptive-card.json";
                 var content = fs.readFileSync(file, "utf8");

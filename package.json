@@ -2,10 +2,10 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.1.8",
+	"version": "1.2.0",
 	"publisher": "madewithcardsio",
 	"engines": {
-		"vscode": "^1.5.0"
+		"vscode": "^1.8.0"
 	},
 	"categories": [
 		"Other",
@@ -189,10 +189,15 @@
 					"default": "",
 					"description": "(ALPHA) The Access Token used for Online Cards"
 				},
-				"acstudio.cardTemporaryFolder": {
-					"type": "string",
-					"default": "tmpdir",
-					"description": "Folder to store temporary cards (use 'tmpdir' or 'workspace' instead of a path)"
+				"acstudio.ignoredFolders": {
+					"type": "array",
+					"default": [
+						"node_modules",
+						"bower_components",
+						"jspm_packages",
+						"dist"
+					],
+					"description": "Folders to ignore when searching for cards"
 				}
 			}
 		}

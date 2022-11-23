@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.0
+ - fixed a screenreader issue (needs more verification)
+ - fixed a random crash issue
+ - Added option to ignore folders when searching for workspace cards
+   node_modules, dist are ignored by default now
+
 ## 1.1.8
  - readme updates
  - fixed shortcut and set default to ctrl+shift+o + a

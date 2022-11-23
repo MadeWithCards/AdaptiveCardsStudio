@@ -38,23 +38,28 @@ export class WorkspaceFolderNode implements INode {
         console.log("ACSTUDIO - Searching for Cards");
         const items: INode[] = [];
 
+        var config = vscode.workspace.getConfiguration('acstudio');
+        var ignoredFolders = config.get<string[]>('ignoredFolders');
+
+        console.log("ignoredFolders->",ignoredFolders);
 
         var files = await glob.sync(
             vscode.workspace.workspaceFolders[0].uri.path + "/**/*.json", 
             { 
-            ignore: ["**/node_modules/**", "./node_modules/**"],
+            ignore: ["**/node_modules/**", "./node_modules/**", ...ignoredFolders],
             }
         );
         if(files.length == 0) {
             files = await glob.sync(
                 vscode.workspace.workspaceFolders[0].uri.path.substring(1) + "/**/*.json", 
                 { 
-                ignore: ["**/node_modules/**", "./node_modules/**"],
+                ignore: ["**/node_modules/**", "./node_modules/**", ...ignoredFolders],
                 }
             ); 
         }
         var i = 0;
         files.forEach(file => {
+            if(ignoredFolders.some(v=> file.includes(v))) return;
             var name = path.basename(file,".json");
             const searchTerm = "adaptivecards.io/schemas/adaptive-card.json";
             var content = fs.readFileSync(file, "utf8");
