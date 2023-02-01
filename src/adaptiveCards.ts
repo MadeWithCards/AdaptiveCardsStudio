@@ -233,8 +233,10 @@ export class AdaptiveCardsMain {
 		return isNGType;
 	}
 
+
+
     // tslint:disable-next-line: typedef
-    public async OpenOrUpdatePanel(cardPath: string, content: string) {
+    public async OpenOrUpdatePanel(cardPath: string, content: string, type: string = 'AC') {
 
         let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
         if(activeEditor == null ||activeEditor.document == null) {

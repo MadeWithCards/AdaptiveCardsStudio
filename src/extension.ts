@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import { CardProvider } from "./cardProvider";
 import { CardProviderOnline } from "./cardProviderOnline";
+import { CardProviderPowerCards } from "./cardProviderPowerCards";
 import { AdaptiveCardsMain } from "./adaptiveCards";
 
 // tslint:disable-next-line: typedef no-empty
@@ -10,8 +11,12 @@ export function activate(context: vscode.ExtensionContext) {
 	const acm : AdaptiveCardsMain = new AdaptiveCardsMain(context,context.extensionPath);
 	const cardProvider : CardProvider = new CardProvider(context,acm);
 	const cardProviderOnline : CardProviderOnline = new CardProviderOnline(context,acm);
+	const cardProviderPowerCards : CardProviderPowerCards = new CardProviderPowerCards(context, acm);
+
 	vscode.window.registerTreeDataProvider("cardList", cardProvider);
 	vscode.window.registerTreeDataProvider("cardListOnline", cardProviderOnline);
+	vscode.window.registerTreeDataProvider("cardListPowerCards", cardProviderPowerCards);
+
 
 	context.subscriptions.push(acm);
 	acm.Initialize();

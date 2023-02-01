@@ -64,11 +64,15 @@
 			"cardLists": [
 				{
 					"id": "cardList",
-					"name": "Workspace Cards"
+					"name": "Adaptive Cards"
+				},
+				{
+					"id": "cardListPowerCards",
+					"name": "Power Cards"
 				},
 				{
 					"id": "cardListOnline",
-					"name": "Online Cards"
+					"name": "Samples"
 				}
 			]
 		},

@@ -8,7 +8,7 @@ import { CardNode } from "./model/CardNode";
 import { AdaptiveCardsMain } from "./adaptiveCards";
 import { WorkspaceFolderNode } from "./model/WorkspaceFolderNode";
 
-export class CardProvider implements vscode.TreeDataProvider<INode> {
+export class CardProviderPowerCards implements vscode.TreeDataProvider<INode> {
     private readonly acm: AdaptiveCardsMain;
 
     public _onDidChangeTreeData: vscode.EventEmitter<INode | void> = new vscode.EventEmitter<INode | void>();
@@ -36,6 +36,8 @@ export class CardProvider implements vscode.TreeDataProvider<INode> {
             return await this.GetAdaptiveCardsInFolder();
         }
         return element.getChildren(this.context);
+
+        return null;
     }
 
     public async GetAdaptiveCardsInFolder(): Promise<INode[]> {
