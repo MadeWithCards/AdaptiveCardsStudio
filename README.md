@@ -1,6 +1,6 @@
 ![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/madewithcardsio.adaptivecardsstudiobeta)
 ![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/madewithcardsio.adaptivecardsstudiobeta)
-![Visual Studio Marketplace Version](https://img.shields.io/github/sponsors/deejaytc)
+[![GHSponsor](https://img.shields.io/github/sponsors/deejaytc?label=Sponsor%20me%20on%20Github)](https://github.com/sponsors/DeeJayTC)
 
 
 ![AC Studio ](https://madewithcards.blob.core.windows.net/uploads/29bb3d02-2158-40b8-8420-4dd1f15da34c-acstudio.png)
@@ -11,6 +11,13 @@
 ## Features
 
 With AdaptiveCards Studio you can author cards directly in Visual Studio Code. The Extension automatically detects all Adaptive Cards in your working space and lets you easily edit the card template and sample data.
+
+## Support the development
+I'll never ask for anything, the page and extension will always be free. 
+However, if you value my work and want to give back, just go to my sponsor page and support me! Much appreciated!
+
+[![GHSponsor](https://img.shields.io/github/sponsors/deejaytc?label=Sponsor%20me%20on%20Github)](https://github.com/sponsors/DeeJayTC)
+
 
 ## Extension Settings
 
@@ -53,8 +60,4 @@ When editing templates its a tremendous help to have sample data available. The 
 
 In the Sample Cards category you can download all cards from the MadeWithCards.io gallery, you can use theese cards freely as a starting point. Just select a card, add a name how you want to store it and thats it!
 
-## Support the development
-I'll never ask for anything, the page and extension will always be free. However, if you value what we do and want to give back, just go to my sponsor page and support me!
-
-[![GHSponsor](https://img.shields.io/github/sponsors/deejaytc?label=Sponsor%20me%20on%20Github)](https://img.shields.io/github/sponsors/deejaytc)
 

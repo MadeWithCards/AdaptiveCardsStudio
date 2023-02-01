@@ -2,7 +2,7 @@
 	"name": "adaptivecardsstudiobeta",
 	"displayName": "Adaptive Card Studio",
 	"description": "Adaptive Card Studio for Visual Studio Code. Easy author AdaptiveCards, add sample data and more",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"publisher": "madewithcardsio",
 	"engines": {
 		"vscode": "^1.8.0"
@@ -162,6 +162,10 @@
 					"type": "string",
 					"default": "microsoft-teams-dark",
 					"enum": [
+						"widget-light",
+						"widget-dark",
+						"viva-connections-light",
+						"viva-connections-dark",
 						"microsoft-teams-dark",
 						"microsoft-teams-light",
 						"webchat",
@@ -173,6 +177,10 @@
 						"windows-notification"
 					],
 					"enumDescriptions": [
+						"Widget Board (light)",
+						"Widget board (dark)",
+						"Viva Connections (light)",
+						"Viva Connections (dark)",
 						"MS Teams Host Config (Dark)",
 						"MS Teams Host Config (Light)",
 						"Bot Framework - WebChat",

@@ -62,13 +62,15 @@ export class WebViews {
         const fabricStyle = vscode.Uri.file( path.join(this._extensionPath, "media/css", "fabric.min.css"));
         const fabricUri = fabricStyle.with({ scheme: "vscode-resource" });
         
-
+        const carousel = vscode.Uri.file( path.join(this._extensionPath, "media/css", "adaptivecards-carousel.css"));
+        const carouselUri  = carousel.with({ scheme: "vscode-resource" });
 
 
         const nonce = this.getNonce();
 
 
         var designerTemplate: string = "";
+
         if (configName.indexOf("teams") > 0) {
             designerTemplate = `<div class="teams-frame flex-item">
                             <div class="teams-hexagon-outer"></div>
@@ -78,7 +80,22 @@ export class WebViews {
                             </div>
                         </div>`;
         }
-        if (configName.indexOf("web") > 0) {
+        else if (configName.indexOf("widget") === 0) {
+            designerTemplate = `<div class="widget-outer-container widget-small-container flex-item">
+                            <div class="widget-header"> <p class="widget-header-text">WidgetHeader</p</div>
+                            <div class="widget-inner-container">
+                                <div id=" widget-small-card">
+                                    <div id="cardHost"></div>
+                                </div>
+                            </div>
+                        </div>`;
+        }
+        else if (configName.indexOf("viva") === 0) {
+            designerTemplate = `<div class="vivaConnectionsContainer flex-item">
+                            <div id="cardHost"></div>
+                        </div>`;
+        }
+        else if (configName.indexOf("web") > 0) {
             designerTemplate = `<div class="webChatInnerContainer flex-item">
                                     <div id="cardHost"></div>
                                 </div>`;
@@ -106,6 +123,7 @@ export class WebViews {
                     <link rel="stylesheet" href="${mainstyleUri}"  nonce="${nonce}"  type="text/css" />
                     <link rel="stylesheet" href="${ACStyleUri}"  nonce="${nonce}"  type="text/css" />
                     <link rel="stylesheet" href="${fabricUri}"  nonce="${nonce}"  type="text/css" />
+                    <link rel="stylesheet" href="${carouselUri}"  nonce="${nonce}"  type="text/css" />
 
                     <style type="text/css">
                     code {

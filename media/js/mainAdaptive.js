@@ -27,8 +27,6 @@
 
             $('#cardHost').append(renderedCard).show();
 
-
-
             $('#shareOutlook').on('click',function(){
                vscode.postMessage({
                     command: 'action',
@@ -52,6 +50,8 @@
             })
          } catch(ex) {
             $('#cardHost').append(ex)
+            $('#cardHost vivaConnectionsContainer').append(ex)
+            $('#cardHost widget-small-card').append(ex)
          }   
        })
 

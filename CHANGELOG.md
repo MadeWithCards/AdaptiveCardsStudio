@@ -1,5 +1,11 @@
 # Change Log
-
+## 1.2.1
+ - fixed a few minor bugs
+ - Updated to latest AdaptiveCards Library (3.0.0 preview)
+ - Now supports carousel and all latest changes/additions
+ - Do note that some of theese are not yet supported by clients
+ - Added new options for sample hosts (Viva connections)
+ 
 ## 1.2.0
  - fixed a screenreader issue (needs more verification)
  - fixed a random crash issue
