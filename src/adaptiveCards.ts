@@ -278,7 +278,7 @@ export class AdaptiveCardsMain {
                     this.panel = vscode.window.createWebviewPanel("ac.CardViewer","Adaptive Card",vscode.ViewColumn.Beside,{
                         enableScripts: true,
                         localResourceRoots: [
-                            vscode.Uri.file(path.join(this._extensionPath, "media"))
+                            vscode.Uri.joinPath(this._context.extensionUri, 'media')
                         ]
                     });
                 }
@@ -286,11 +286,11 @@ export class AdaptiveCardsMain {
                 this.panel = vscode.window.createWebviewPanel("ac.CardViewer","Adaptive Card",vscode.ViewColumn.Beside,{
                     enableScripts: true,
                     localResourceRoots: [
-                        vscode.Uri.file(path.join(this._extensionPath, "media"))
+                        vscode.Uri.joinPath(this._context.extensionUri, 'media')
                     ]
                 });
             }
-            var panelData: any =  await this.WebViews.GetWebViewContentAdaptiveCard(text,data);
+            var panelData: any =  await this.WebViews.GetWebViewContentAdaptiveCard(text,data, this.panel);
             this.panel.webview.html = panelData.html;
 
             this.panel.webview.onDidReceiveMessage(
