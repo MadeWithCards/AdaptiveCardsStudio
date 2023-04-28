@@ -5,7 +5,7 @@
 	"version": "1.2.1",
 	"publisher": "madewithcardsio",
 	"engines": {
-		"vscode": "^1.8.0"
+		"vscode": "^1.77.0"
 	},
 	"categories": [
 		"Other",
@@ -213,7 +213,6 @@
 	"scripts": {
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
 		"test": "npm run compile && node ./node_modules/vscode/bin/test",
 		"vscode:prepublish": "npm run -S esbuild-base --minify",
 		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
@@ -224,7 +223,8 @@
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^5.2.6",
-		"@types/node": "^10.17.30",
+		"@types/node": "^16.18.24",
+		"@types/vscode": "^1.77.0",
 		"esbuild": "^0.12.15",
 		"tslint": "^5.12.1",
 		"typescript": "^3.9.7"
@@ -254,7 +254,6 @@
 	],
 	"dependencies": {
 		"@microsoft/microsoft-graph-client": "^2.0.0",
-		"@types/vscode": "^1.52.0",
 		"adaptive-expressions": "^4.13.6",
 		"adaptivecards-templating": "^2.1.0",
 		"axios": "^0.19.2",

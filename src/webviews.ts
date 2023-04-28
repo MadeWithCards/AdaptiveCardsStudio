@@ -14,7 +14,7 @@ export class WebViews {
         this._extensionPath = extensionPath;
     }
 
-    public async GetWebViewContentAdaptiveCard(cardContent: string, cardData: string) {
+    public async GetWebViewContentAdaptiveCard(cardContent: string, cardData: string, panel: vscode.WebviewPanel) {
         let editor = vscode.window.activeTextEditor;
 
         if (editor) {
@@ -30,41 +30,26 @@ export class WebViews {
         var hostConfig = fs.readFileSync(path.join(this._extensionPath, "media/js/hostConfigs", configName + ".json"), "ascii");
 
         // local path to main script run in the webview
-        const scriptPathOnDisk = vscode.Uri.file(
-            path.join(this._extensionPath, "media/js", "mainAdaptive.js")
-        );
-        // and the uri we use to load this script in the webview
-        const scriptUri = scriptPathOnDisk.with({ scheme: "vscode-resource" });
+        const scriptUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/js", "mainAdaptive.js"));
 
         // jquery
-        const jqueryPath = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "jquery.min.js"));
-        const jqueryUri = jqueryPath.with({ scheme: "vscode-resource" });
+        const jqueryUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/js", "jquery.min.js"));
 
-        let url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards.min.js"));
-        const ACUri = url.with({ scheme: "vscode-resource" });
+        const ACUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/js", "adaptivecards.min.js"));
 
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "adaptivecards-templating.min.js"));
-        const ACTemplatingUri = url.with({ scheme: "vscode-resource" });
+        const ACTemplatingUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/js", "adaptivecards-templating.min.js"));
 
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "browser.min.js"));
-        const ACExpressionsUri = url.with({ scheme: "vscode-resource" });
+        const ACExpressionsUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/js", "browser.min.js"));
               
+        const MarkdownUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/js", "markdown-it.min.js"));
 
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/js", "markdown-it.min.js"));
-        const MarkdownUri = url.with({ scheme: "vscode-resource" });
+        const mainstyleUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/css/additional", configName + ".css"));
 
-        url = vscode.Uri.file(	path.join(this._extensionPath, "media/css/additional", configName + ".css"));
-        const mainstyleUri = url.with({ scheme: "vscode-resource" });
+        const ACStyleUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/css", "editormain.css"));
 
-        const ACstyle = vscode.Uri.file(	path.join(this._extensionPath, "media/css", "editormain.css"));
-        const ACStyleUri = ACstyle.with({ scheme: "vscode-resource" });
-
-        const fabricStyle = vscode.Uri.file( path.join(this._extensionPath, "media/css", "fabric.min.css"));
-        const fabricUri = fabricStyle.with({ scheme: "vscode-resource" });
+        const fabricUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/css", "fabric.min.css"));
         
-        const carousel = vscode.Uri.file( path.join(this._extensionPath, "media/css", "adaptivecards-carousel.css"));
-        const carouselUri  = carousel.with({ scheme: "vscode-resource" });
-
+        const carouselUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(this._context.extensionUri, "media/css", "adaptivecards-carousel.css"));
 
         const nonce = this.getNonce();
 
