@@ -241,7 +241,7 @@ export class AdaptiveCardsMain {
             return;
         }
 
-        let text: string, data: string = "";
+        let text: string = "", data: string = "";
         // when a data file is edited, get text from json template instead
         // when a template is edited, get data from json.data instead
         if(activeEditor.document.fileName.endsWith(".data.json")) {
