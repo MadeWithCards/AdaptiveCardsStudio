@@ -36,6 +36,7 @@
 .teams-inner-frame {
     background-color: #2D2B2C;
     border-radius: 4px;
+    box-shadow: 0 25px 57px 0 rgba(0, 0, 0, .22), 0 5px 14px 0 rgba(0, 0, 0, .18);
     padding: 24px;
     min-width: 400px;
     max-width: 726px;
